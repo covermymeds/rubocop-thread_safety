@@ -5,7 +5,7 @@ require 'rubocop/thread_safety/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "rubocop-thread_safety"
-  spec.version       = Rubocop::ThreadSafety::VERSION
+  spec.version       = RuboCop::ThreadSafety::VERSION
   spec.authors       = ["Michael Gee"]
   spec.email         = ["michaelpgee@gmail.com"]
 
@@ -34,4 +34,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler", "~> 1.10"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
+  spec.add_development_dependency "pry"
 end

@@ -1,10 +1,11 @@
 # RuboCop::ThreadSafety
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/rubocop/thread_safety`. To experiment with that code, run `bin/console` for an interactive prompt.
+Thread-safety analysis for your projects, as an extension to
+[RuboCop](https://github.com/bbatsov/rubocop).
 
-TODO: Delete this and the text above, and describe your gem
+## Installation and Usage
 
-## Installation
+### Installation into an application
 
 Add this line to your application's Gemfile:
 
@@ -12,17 +13,26 @@ Add this line to your application's Gemfile:
 gem 'rubocop-thread_safety'
 ```
 
-And then execute:
+Install it with Bundler by invoking:
 
     $ bundle
 
-Or install it yourself as:
+Add this line to your application's `.rubocop.yml`:
+
+    require: rubocop-thread_safety
+
+Now you can run `rubocop` and it will automatically load the RuboCop
+Thread-Safety cops together with the standard cops.
+
+### Scanning an application without adding it to the Gemfile
+
+Install the gem:
 
     $ gem install rubocop-thread_safety
 
-## Usage
+Scan the application for just thread-safety issues:
 
-TODO: Write usage instructions here
+    $ rubocop -r rubocop-thread_safety --only Threadsafety,Style/GlobalVars,Style/ClassVars,Style/MutableConstant
 
 ## Development
 

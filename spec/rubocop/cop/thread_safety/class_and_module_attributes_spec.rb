@@ -11,7 +11,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes do
                     'end'])
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages)
-      .to eq(['Avoid class and module attributes.'])
+      .to eq(['Avoid mutating class and module attributes.'])
     expect(cop.highlights).to eq(['mattr_writer :foobar'])
   end
 
@@ -22,7 +22,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes do
                     'end'])
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages)
-      .to eq(['Avoid class and module attributes.'])
+      .to eq(['Avoid mutating class and module attributes.'])
     expect(cop.highlights).to eq(['mattr_accessor :foobar'])
   end
 
@@ -33,7 +33,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes do
                     'end'])
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages)
-      .to eq(['Avoid class and module attributes.'])
+      .to eq(['Avoid mutating class and module attributes.'])
     expect(cop.highlights).to eq(['cattr_writer :foobar'])
   end
 
@@ -44,7 +44,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes do
                     'end'])
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages)
-      .to eq(['Avoid class and module attributes.'])
+      .to eq(['Avoid mutating class and module attributes.'])
     expect(cop.highlights).to eq(['cattr_accessor :foobar'])
   end
 

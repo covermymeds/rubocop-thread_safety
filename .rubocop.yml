@@ -1,0 +1,40 @@
+AllCops:
+  DisplayCopNames: true
+  Include:
+    - Gemfile
+    - Rakefile
+  Exclude:
+    - vendor/**/*
+
+Style/FileName:
+  Exclude:
+    - lib/rubocop-thread_safety.rb
+
+# Enable more cops that are disabled by default:
+
+Style/AutoResourceCleanup:
+  Enabled: true
+
+Style/CollectionMethods:
+  Enabled: true
+
+Style/MethodCalledOnDoEndBlock:
+  Enabled: true
+  Exclude:
+    - spec/**/*
+
+Style/MissingElse:
+  Enabled: true
+  EnforcedStyle: case
+
+Style/OptionHash:
+  Enabled: true
+
+Style/Send:
+  Enabled: true
+
+Style/StringMethods:
+  Enabled: true
+
+Style/SymbolArray:
+  Enabled: true

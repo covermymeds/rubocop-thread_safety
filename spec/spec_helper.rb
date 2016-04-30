@@ -1,6 +1,6 @@
 begin
   require 'pry'
-rescue LoadError
+rescue LoadError # rubocop:disable Lint/HandleExceptions
   # Pry isn't installed in CI.
 end
 

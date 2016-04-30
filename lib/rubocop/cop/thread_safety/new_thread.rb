@@ -4,6 +4,13 @@
 module RuboCop
   module Cop
     module ThreadSafety
+      # Avoid starting new threads.
+      #
+      # Let a framework like Sidekiq handle the threads.
+      #
+      # @example
+      #   # bad
+      #   Thread.new { do_work }
       class NewThread < Cop
         MSG = 'Avoid starting new threads.'.freeze
 

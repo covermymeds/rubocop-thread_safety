@@ -22,9 +22,21 @@ module RuboCop
             ...)
         END
 
+        def_node_matcher :attr?, <<-END
+          (send nil
+            {:attr :attr_accessor :attr_writer}
+            ...)
+        END
+
         def on_send(node)
-          return unless mattr?(node)
+          return unless mattr?(node) || singleton_attr?(node)
           add_offense(node, :expression, format(MSG, node.source))
+        end
+
+        private
+
+        def singleton_attr?(node)
+          attr?(node) && node.ancestors.map(&:type).include?(:sclass)
         end
       end
     end

@@ -12,7 +12,7 @@ module RuboCop
 
           add_offense(node, :name, MSG)
         end
-        alias_method :on_ivasgn, :on_ivar
+        alias on_ivasgn on_ivar
 
         private
 

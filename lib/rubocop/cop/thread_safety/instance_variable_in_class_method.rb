@@ -4,17 +4,33 @@
 module RuboCop
   module Cop
     module ThreadSafety
+      # Avoid instance variables in class methods.
+      #
+      # @example
+      #   # bad
+      #   class User
+      #     def self.notify(info)
+      #       @info = validate(info)
+      #       Notifier.new(@info).deliver
+      #     end
+      #   end
       class InstanceVariableInClassMethod < Cop
         MSG = 'Avoid instance variables in class methods.'.freeze
 
         def on_ivar(node)
-          return unless in_defs?(node) || in_def_sclass?(node) || singleton_method_definition?(node)
+          return unless class_method_definition?(node)
 
           add_offense(node, :name, MSG)
         end
-        alias_method :on_ivasgn, :on_ivar
+        alias on_ivasgn on_ivar
 
         private
+
+        def class_method_definition?(node)
+          in_defs?(node) ||
+            in_def_sclass?(node) ||
+            singleton_method_definition?(node)
+        end
 
         def in_defs?(node)
           node.ancestors.any? do |ancestor|

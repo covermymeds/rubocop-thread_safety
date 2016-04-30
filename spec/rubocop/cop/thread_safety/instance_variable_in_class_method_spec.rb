@@ -30,7 +30,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::InstanceVariableInClassMethod do
     expect(cop.highlights).to eq(['@params'])
   end
 
-  it 'registers an offense for assigning to an ivar in a class method defined via the class singleton' do
+  it 'registers an offense for assigning an ivar in a class singleton method' do
     inspect_source(cop,
                    ['class Test',
                     '  class << self',
@@ -45,7 +45,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::InstanceVariableInClassMethod do
     expect(cop.highlights).to eq(['@params'])
   end
 
-  it 'registers an offense for assigning to an ivar in the body of define_singleton_method' do
+  it 'registers an offense for assigning an ivar in define_singleton_method' do
     inspect_source(cop,
                    ['class Test',
                     '  define_singleton_method(:some_method) do |params|',

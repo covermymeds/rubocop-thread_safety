@@ -4,8 +4,17 @@
 module RuboCop
   module Cop
     module ThreadSafety
+      # Avoid mutating class and module attributes.
+      #
+      # They are implemented by class variables, which are not thread-safe.
+      #
+      # @example
+      #   # bad
+      #   class User
+      #     cattr_accessor :current_user
+      #   end
       class ClassAndModuleAttributes < Cop
-        MSG = 'Avoid class and module attributes.'.freeze
+        MSG = 'Avoid mutating class and module attributes.'.freeze
 
         def_node_matcher :mattr?, <<-END
           (send nil

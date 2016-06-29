@@ -4,6 +4,3 @@ IFS=$'\n\t'
 set -vx
 
 bundle install
-
-git submodule add git@github.com:bbatsov/rubocop vendor/rubocop || true
-git submodule update --init --depth 1 vendor/rubocop

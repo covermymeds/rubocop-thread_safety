@@ -57,10 +57,11 @@ module RuboCop
         end
 
         def synchronized?(node)
-          p = node.parent
-          return false unless p.block_type?
-          s = p.children.first
-          s.send_type? && s.children.last == :synchronize
+          node.ancestors.find do |ancestor|
+            next unless ancestor.block_type?
+            s = ancestor.children.first
+            s.send_type? && s.children.last == :synchronize
+          end
         end
       end
     end

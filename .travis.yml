@@ -1,16 +1,13 @@
 sudo: false
 cache: bundler
 language: ruby
-
 rvm:
-  - 1.9.3
   - 2.0.0
   - 2.1
   - 2.2
   - 2.3.0
   - ruby-head
-  - jruby-19mode
-  - jruby-9.0.5.0
+  - jruby-9.0.1.0
   - rbx-3
 
 matrix:
@@ -19,7 +16,9 @@ matrix:
     - rvm: rbx-3
   fast_finish: true
 
-before_install: gem install bundler
+before_install: gem install --remote bundler
+install:
+  - bundle install --retry=3
 script:
   - bundle exec rspec
   - bundle exec rubocop

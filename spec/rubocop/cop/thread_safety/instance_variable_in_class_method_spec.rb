@@ -30,6 +30,18 @@ RSpec.describe RuboCop::Cop::ThreadSafety::InstanceVariableInClassMethod do
     expect(cop.offenses.size).to eq(0)
   end
 
+  it 'registers no offense when memoization is synchronized by a mutex' do
+    inspect_source(cop,
+                   ['class Test',
+                    '  SEMAPHORE = Mutex.new',
+                    '  def self.types',
+                    '    SEMAPHORE',
+                    '      .synchronize { @all_types ||= type_class.all }',
+                    '  end',
+                    'end'])
+    expect(cop.offenses.size).to eq(0)
+  end
+
   it 'registers an offense for reading an ivar in a class method' do
     inspect_source(cop,
                    ['class Test',

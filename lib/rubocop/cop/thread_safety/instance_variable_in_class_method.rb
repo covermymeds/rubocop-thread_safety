@@ -19,6 +19,7 @@ module RuboCop
 
         def on_ivar(node)
           return unless class_method_definition?(node)
+          return if synchronized?(node)
 
           add_offense(node, :name, MSG)
         end
@@ -53,6 +54,13 @@ module RuboCop
             next unless ancestor.children.first.is_a? Node
             ancestor.children.first.command? :define_singleton_method
           end
+        end
+
+        def synchronized?(node)
+          p = node.parent
+          return false unless p.block_type?
+          s = p.children.first
+          s.send_type? && s.children.last == :synchronize
         end
       end
     end

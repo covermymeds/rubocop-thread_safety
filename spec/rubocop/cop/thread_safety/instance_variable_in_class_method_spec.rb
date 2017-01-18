@@ -1,7 +1,7 @@
 # encoding: utf-8
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::ThreadSafety::InstanceVariableInClassMethod do
+RSpec.describe RuboCop::Cop::ThreadSafety::InstanceVariableInClassMethod do # rubocop:disable Metrics/BlockLength, Metrics/LineLength
   subject(:cop) { described_class.new }
 
   it 'registers an offense for assigning to an ivar in a class method' do

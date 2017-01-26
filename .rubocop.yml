@@ -6,6 +6,10 @@ AllCops:
   Exclude:
     - vendor/**/*
 
+Metrics/BlockLength:
+  Exclude:
+    - "spec/**/*"
+
 Style/FileName:
   Exclude:
     - lib/rubocop-thread_safety.rb

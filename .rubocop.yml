@@ -13,6 +13,7 @@ Metrics/BlockLength:
 Style/FileName:
   Exclude:
     - lib/rubocop-thread_safety.rb
+    - rubocop-thread_safety.gemspec
 
 # Enable more cops that are disabled by default:
 

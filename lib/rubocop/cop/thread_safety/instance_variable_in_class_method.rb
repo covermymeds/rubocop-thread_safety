@@ -51,7 +51,7 @@ module RuboCop
 
         def singleton_method_definition?(node)
           node.ancestors.any? do |ancestor|
-            next unless ancestor.children.first.is_a? AST::Node
+            next unless ancestor.children.first.is_a? AST::SendNode
             ancestor.children.first.command? :define_singleton_method
           end
         end

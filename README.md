@@ -44,3 +44,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/covermymeds/rubocop-thread_safety.
 
+## Copyright
+
+Copyright (c) 2016-2017 CoverMyMeds.
+See [LICENSE.txt](LICENSE.txt) for further details.

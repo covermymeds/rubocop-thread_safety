@@ -16,6 +16,7 @@ Gem::Specification.new do |spec|
     A plugin for the RuboCop code style enforcing & linting tool.
   end_description
   spec.homepage = 'https://github.com/covermymeds/rubocop-thread_safety'
+  spec.licenses = ['MIT']
 
   spec.files = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})

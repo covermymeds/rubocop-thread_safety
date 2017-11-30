@@ -17,13 +17,13 @@ module RuboCop
         MSG = 'Avoid mutating class and module attributes.'.freeze
 
         def_node_matcher :mattr?, <<-END
-          (send nil
+          (send nil?
             {:mattr_writer :mattr_accessor :cattr_writer :cattr_accessor}
             ...)
         END
 
         def_node_matcher :attr?, <<-END
-          (send nil
+          (send nil?
             {:attr :attr_accessor :attr_writer}
             ...)
         END

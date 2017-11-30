@@ -1,4 +1,3 @@
-# encoding: utf-8
 # frozen_string_literal: true
 
 module RuboCop
@@ -14,9 +13,9 @@ module RuboCop
       class NewThread < Cop
         MSG = 'Avoid starting new threads.'.freeze
 
-        def_node_matcher :new_thread?, <<-END
+        def_node_matcher :new_thread?, <<-MATCHER
           (send (const nil? :Thread) :new)
-        END
+        MATCHER
 
         def on_send(node)
           return unless new_thread?(node)

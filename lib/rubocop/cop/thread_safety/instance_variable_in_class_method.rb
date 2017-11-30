@@ -21,7 +21,7 @@ module RuboCop
           return unless class_method_definition?(node)
           return if synchronized?(node)
 
-          add_offense(node, :name, MSG)
+          add_offense(node, location: :name, message: MSG)
         end
         alias on_ivasgn on_ivar
 

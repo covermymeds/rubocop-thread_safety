@@ -20,7 +20,7 @@ module RuboCop
 
         def on_send(node)
           return unless new_thread?(node)
-          add_offense(node, :expression, format(MSG, node.source))
+          add_offense(node, message: MSG)
         end
       end
     end

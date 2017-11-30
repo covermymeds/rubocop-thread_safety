@@ -10,7 +10,7 @@ Metrics/BlockLength:
   Exclude:
     - "spec/**/*"
 
-Style/FileName:
+Naming/FileName:
   Exclude:
     - lib/rubocop-thread_safety.rb
     - rubocop-thread_safety.gemspec

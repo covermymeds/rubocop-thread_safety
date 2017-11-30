@@ -1,5 +1,3 @@
-# coding: utf-8
-
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'rubocop/thread_safety/version'
@@ -11,10 +9,10 @@ Gem::Specification.new do |spec|
   spec.email         = ['michaelpgee@gmail.com']
 
   spec.summary       = 'Thread-safety checks via static analysis'
-  spec.description   = <<-end_description
+  spec.description   = <<-DESCRIPTION
     Thread-safety checks via static analysis.
     A plugin for the RuboCop code style enforcing & linting tool.
-  end_description
+  DESCRIPTION
   spec.homepage = 'https://github.com/covermymeds/rubocop-thread_safety'
   spec.licenses = ['MIT']
 
@@ -26,10 +24,10 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.add_runtime_dependency 'rubocop', '>= 0.48.0'
+  spec.add_runtime_dependency 'rubocop', '>= 0.51.0'
 
   spec.add_development_dependency 'bundler', '~> 1.10'
+  spec.add_development_dependency 'pry' unless ENV['CI']
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec', '~> 3.0'
-  spec.add_development_dependency 'pry' unless ENV['CI']
 end

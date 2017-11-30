@@ -10,6 +10,8 @@ require 'rubocop-thread_safety'
 require 'rubocop/rspec/support'
 
 RSpec.configure do |config|
+  config.include RuboCop::RSpec::ExpectOffense
+
   config.expect_with :rspec do |expectations|
     expectations.syntax = :expect
   end

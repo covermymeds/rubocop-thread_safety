@@ -46,5 +46,5 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/coverm
 
 ## Copyright
 
-Copyright (c) 2016-2017 CoverMyMeds.
+Copyright (c) 2016-2020 CoverMyMeds.
 See [LICENSE.txt](LICENSE.txt) for further details.

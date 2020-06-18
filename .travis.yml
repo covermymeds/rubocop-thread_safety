@@ -11,7 +11,7 @@ rvm:
 matrix:
   fast_finish: true
 
-before_install: gem install --remote bundler
+before_install: gem install --remote bundler -v '1.17.3'
 install:
   - bundle install --retry=3
 script:

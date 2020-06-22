@@ -13,7 +13,7 @@ module RuboCop
       #     cattr_accessor :current_user
       #   end
       class ClassAndModuleAttributes < Cop
-        MSG = 'Avoid mutating class and module attributes.'.freeze
+        MSG = 'Avoid mutating class and module attributes.'
 
         def_node_matcher :mattr?, <<-MATCHER
           (send nil?
@@ -29,6 +29,7 @@ module RuboCop
 
         def on_send(node)
           return unless mattr?(node) || singleton_attr?(node)
+
           add_offense(node, message: MSG)
         end
 

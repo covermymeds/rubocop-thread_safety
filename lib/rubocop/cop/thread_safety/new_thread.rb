@@ -11,7 +11,7 @@ module RuboCop
       #   # bad
       #   Thread.new { do_work }
       class NewThread < Cop
-        MSG = 'Avoid starting new threads.'.freeze
+        MSG = 'Avoid starting new threads.'
 
         def_node_matcher :new_thread?, <<-MATCHER
           (send (const nil? :Thread) :new)
@@ -19,6 +19,7 @@ module RuboCop
 
         def on_send(node)
           return unless new_thread?(node)
+
           add_offense(node, message: MSG)
         end
       end

@@ -82,6 +82,15 @@ RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes do
     RUBY
   end
 
+  it 'registers an offense for `class_attribute`' do
+    expect_offense(<<-RUBY.strip_indent)
+      class Test
+        class_attribute :foobar
+        ^^^^^^^^^^^^^^^^^^^^^^^ Avoid mutating class and module attributes.
+      end
+    RUBY
+  end
+
   it 'registers no offense for other class macro calls' do
     expect_no_offenses(<<-RUBY.strip_indent)
       class Test

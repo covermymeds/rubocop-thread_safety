@@ -1,12 +1,15 @@
+# frozen_string_literal: true
+
 begin
   require 'pry'
-rescue LoadError # rubocop:disable Lint/HandleExceptions
+rescue LoadError
   # Pry isn't installed in CI.
 end
 
-$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
+$LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 require 'rubocop-thread_safety'
 
+require 'powerpack/string/strip_indent'
 require 'rubocop/rspec/support'
 
 RSpec.configure do |config|

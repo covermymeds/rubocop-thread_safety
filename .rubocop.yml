@@ -1,10 +1,5 @@
 AllCops:
   DisplayCopNames: true
-  Include:
-    - Gemfile
-    - Rakefile
-  Exclude:
-    - vendor/**/*
 
 Metrics/BlockLength:
   Exclude:

@@ -14,7 +14,7 @@ module RuboCop
       #     end
       #   end
       class InstanceVariableInClassMethod < Cop
-        MSG = 'Avoid instance variables in class methods.'.freeze
+        MSG = 'Avoid instance variables in class methods.'
 
         def on_ivar(node)
           return unless class_method_definition?(node)
@@ -43,7 +43,7 @@ module RuboCop
             ancestor.type == :def
           end
 
-          defn && defn.ancestors.any? do |ancestor|
+          defn&.ancestors&.any? do |ancestor|
             ancestor.type == :sclass
           end
         end
@@ -51,6 +51,7 @@ module RuboCop
         def singleton_method_definition?(node)
           node.ancestors.any? do |ancestor|
             next unless ancestor.children.first.is_a? AST::SendNode
+
             ancestor.children.first.command? :define_singleton_method
           end
         end
@@ -58,6 +59,7 @@ module RuboCop
         def synchronized?(node)
           node.ancestors.find do |ancestor|
             next unless ancestor.block_type?
+
             s = ancestor.children.first
             s.send_type? && s.children.last == :synchronize
           end

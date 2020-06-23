@@ -5,6 +5,12 @@ Metrics/BlockLength:
   Exclude:
     - "spec/**/*"
 
+Metrics/ClassLength:
+  Enabled: false
+
+Metrics/MethodLength:
+  Max: 14
+
 Naming/FileName:
   Exclude:
     - lib/rubocop-thread_safety.rb

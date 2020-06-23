@@ -34,7 +34,8 @@ module RuboCop
         MATCHER
 
         def on_send(node)
-          return unless mattr?(node) || class_attr?(node) || singleton_attr?(node)
+          return unless mattr?(node) || class_attr?(node) ||
+                        singleton_attr?(node)
 
           add_offense(node, message: MSG)
         end

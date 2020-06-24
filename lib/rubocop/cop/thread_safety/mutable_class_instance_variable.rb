@@ -7,7 +7,7 @@ module RuboCop
       # mutable literal (e.g. array or hash).
       #
       # It is based on Style/MutableConstant from RuboCop.
-      # See https://github.com/rubocop-hq/rubocop/blob/master/LICENSE.txt
+      # See https://github.com/rubocop-hq/rubocop/blob/master/lib/rubocop/cop/style/mutable_constant.rb
       #
       # Class instance variables are a risk to threaded code as they are shared
       # between threads. A mutable object such as an array or hash may be

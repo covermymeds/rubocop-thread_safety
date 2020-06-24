@@ -3,90 +3,92 @@
 RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes do
   subject(:cop) { described_class.new }
 
-  it 'registers an offense for `attr` in the singleton class' do
-    expect_offense(<<-RUBY.strip_indent)
-      module Test
-        class << self
-          attr :foobar
-          ^^^^^^^^^^^^ Avoid mutating class and module attributes.
+  context 'when in the singleton class' do
+    it 'registers an offense for `attr`' do
+      expect_offense(<<-RUBY.strip_indent)
+        module Test
+          class << self
+            attr :foobar
+            ^^^^^^^^^^^^ Avoid mutating class and module attributes.
+          end
         end
-      end
-    RUBY
-  end
+      RUBY
+    end
 
-  it 'registers an offense for `attr_accessor` in the singleton class' do
-    expect_offense(<<-RUBY.strip_indent)
-      module Test
-        class << self
-          attr_accessor :foobar
-          ^^^^^^^^^^^^^^^^^^^^^ Avoid mutating class and module attributes.
+    it 'registers an offense for `attr_accessor`' do
+      expect_offense(<<-RUBY.strip_indent)
+        module Test
+          class << self
+            attr_accessor :foobar
+            ^^^^^^^^^^^^^^^^^^^^^ Avoid mutating class and module attributes.
+          end
         end
-      end
-    RUBY
-  end
+      RUBY
+    end
 
-  it 'registers an offense for `attr_writer` in the singleton class' do
-    expect_offense(<<-RUBY.strip_indent)
-      module Test
-        class << self
-          attr_writer :foobar
-          ^^^^^^^^^^^^^^^^^^^ Avoid mutating class and module attributes.
+    it 'registers an offense for `attr_writer`' do
+      expect_offense(<<-RUBY.strip_indent)
+        module Test
+          class << self
+            attr_writer :foobar
+            ^^^^^^^^^^^^^^^^^^^ Avoid mutating class and module attributes.
+          end
         end
-      end
-    RUBY
-  end
+      RUBY
+    end
 
-  it 'registers no offense for `attr_reader` in the singleton class' do
-    expect_no_offenses(<<-RUBY.strip_indent)
-      module Test
-        class << self
-          attr_reader :foobar
+    it 'registers no offense for `attr_reader`' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        module Test
+          class << self
+            attr_reader :foobar
+          end
         end
-      end
-    RUBY
-  end
+      RUBY
+    end
 
-  it 'registers an offense for `attr_internal` in the singleton class' do
-    expect_offense(<<-RUBY.strip_indent)
-      module Test
-        class << self
-          attr_internal :foobar
-          ^^^^^^^^^^^^^^^^^^^^^ Avoid mutating class and module attributes.
+    it 'registers an offense for `attr_internal`' do
+      expect_offense(<<-RUBY.strip_indent)
+        module Test
+          class << self
+            attr_internal :foobar
+            ^^^^^^^^^^^^^^^^^^^^^ Avoid mutating class and module attributes.
+          end
         end
-      end
-    RUBY
-  end
+      RUBY
+    end
 
-  it 'registers an offense for `attr_internal_accessor` in the singleton class' do
-    expect_offense(<<-RUBY.strip_indent)
-      module Test
-        class << self
-          attr_internal_accessor :foobar
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid mutating class and module attributes.
+    it 'registers an offense for `attr_internal_accessor`' do
+      expect_offense(<<-RUBY.strip_indent)
+        module Test
+          class << self
+            attr_internal_accessor :foobar
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid mutating class and module attributes.
+          end
         end
-      end
-    RUBY
-  end
+      RUBY
+    end
 
-  it 'registers an offense for `attr_internal_writer` in the singleton class' do
-    expect_offense(<<-RUBY.strip_indent)
-      module Test
-        class << self
-          attr_internal_writer :foobar
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid mutating class and module attributes.
+    it 'registers an offense for `attr_internal_writer`' do
+      expect_offense(<<-RUBY.strip_indent)
+        module Test
+          class << self
+            attr_internal_writer :foobar
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid mutating class and module attributes.
+          end
         end
-      end
-    RUBY
-  end
+      RUBY
+    end
 
-  it 'registers no offense for `attr_internal_reader` in the singleton class' do
-    expect_no_offenses(<<-RUBY.strip_indent)
-      module Test
-        class << self
-          attr_internal_reader :foobar
+    it 'registers no offense for `attr_internal_reader`' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        module Test
+          class << self
+            attr_internal_reader :foobar
+          end
         end
-      end
-    RUBY
+      RUBY
+    end
   end
 
   it 'registers an offense for `mattr_writer`' do

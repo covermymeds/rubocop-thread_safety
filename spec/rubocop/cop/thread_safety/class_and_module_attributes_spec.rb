@@ -2,6 +2,7 @@
 
 RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes do
   subject(:cop) { described_class.new }
+  let(:msg) { 'Avoid mutating class and module attributes.' }
 
   context 'when in the singleton class' do
     it 'registers an offense for `attr`' do
@@ -9,7 +10,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes do
         module Test
           class << self
             attr :foobar
-            ^^^^^^^^^^^^ Avoid mutating class and module attributes.
+            ^^^^^^^^^^^^ #{msg}
           end
         end
       RUBY
@@ -20,7 +21,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes do
         module Test
           class << self
             attr_accessor :foobar
-            ^^^^^^^^^^^^^^^^^^^^^ Avoid mutating class and module attributes.
+            ^^^^^^^^^^^^^^^^^^^^^ #{msg}
           end
         end
       RUBY
@@ -31,7 +32,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes do
         module Test
           class << self
             attr_writer :foobar
-            ^^^^^^^^^^^^^^^^^^^ Avoid mutating class and module attributes.
+            ^^^^^^^^^^^^^^^^^^^ #{msg}
           end
         end
       RUBY
@@ -52,7 +53,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes do
         module Test
           class << self
             attr_internal :foobar
-            ^^^^^^^^^^^^^^^^^^^^^ Avoid mutating class and module attributes.
+            ^^^^^^^^^^^^^^^^^^^^^ #{msg}
           end
         end
       RUBY
@@ -63,7 +64,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes do
         module Test
           class << self
             attr_internal_accessor :foobar
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid mutating class and module attributes.
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{msg}
           end
         end
       RUBY
@@ -74,7 +75,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes do
         module Test
           class << self
             attr_internal_writer :foobar
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid mutating class and module attributes.
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{msg}
           end
         end
       RUBY
@@ -95,7 +96,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes do
     expect_offense(<<-RUBY.strip_indent)
       module Test
         mattr_writer :foobar
-        ^^^^^^^^^^^^^^^^^^^^ Avoid mutating class and module attributes.
+        ^^^^^^^^^^^^^^^^^^^^ #{msg}
       end
     RUBY
   end
@@ -104,7 +105,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes do
     expect_offense(<<-RUBY.strip_indent)
       module Test
         mattr_accessor :foobar
-        ^^^^^^^^^^^^^^^^^^^^^^ Avoid mutating class and module attributes.
+        ^^^^^^^^^^^^^^^^^^^^^^ #{msg}
       end
     RUBY
   end
@@ -113,7 +114,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes do
     expect_offense(<<-RUBY.strip_indent)
       class Test
         cattr_writer :foobar
-        ^^^^^^^^^^^^^^^^^^^^ Avoid mutating class and module attributes.
+        ^^^^^^^^^^^^^^^^^^^^ #{msg}
       end
     RUBY
   end
@@ -122,7 +123,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes do
     expect_offense(<<-RUBY.strip_indent)
       class Test
         cattr_accessor :foobar
-        ^^^^^^^^^^^^^^^^^^^^^^ Avoid mutating class and module attributes.
+        ^^^^^^^^^^^^^^^^^^^^^^ #{msg}
       end
     RUBY
   end
@@ -131,7 +132,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes do
     expect_offense(<<-RUBY.strip_indent)
       class Test
         class_attribute :foobar
-        ^^^^^^^^^^^^^^^^^^^^^^^ Avoid mutating class and module attributes.
+        ^^^^^^^^^^^^^^^^^^^^^^^ #{msg}
       end
     RUBY
   end

@@ -371,6 +371,38 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
         it_behaves_like 'immutable objects', '[1, 2].freeze'
         it_behaves_like 'immutable objects', 'Something.new.freeze'
 
+        context 'with thread-safe data structure' do
+          it_behaves_like 'immutable objects', 'Queue.new'
+          it_behaves_like 'immutable objects', '::Queue.new'
+          it_behaves_like 'immutable objects', 'ThreadSafe::Array.new'
+          it_behaves_like 'immutable objects', '::ThreadSafe::Hash.new'
+          it_behaves_like 'immutable objects', 'ThreadSafe::Hash.new { false }'
+          it_behaves_like 'immutable objects', 'Concurrent::Array.new'
+          it_behaves_like 'immutable objects', 'Concurrent::Hash.new'
+          it_behaves_like 'immutable objects', '::Concurrent::Map.new'
+          it_behaves_like 'immutable objects', <<-RUBY.strip_indent
+            Concurrent::Map.new(initial_capacity: 4)
+          RUBY
+          it_behaves_like 'immutable objects', <<-RUBY.strip_indent
+            Concurrent::Map.new do |h, key|
+              h.fetch_or_store(key, Concurrent::Map.new)
+            end
+          RUBY
+          it_behaves_like 'immutable objects',
+                          'Concurrent::ContinuationQueue.new'
+          it_behaves_like 'immutable objects',
+                          'Concurrent::ThreadPoolExecutor.new(options)'
+          it_behaves_like 'immutable objects',
+                          'Concurrent::AtomicBoolean.new(true)'
+          it_behaves_like 'immutable objects',
+                          'Concurrent::ThreadSafe::Util::Adder.new'
+
+          it_behaves_like 'mutable objects', '[Queue.new]'
+          it_behaves_like 'mutable objects', '[ThreadSafe::Hash.new { false }]'
+          it_behaves_like 'mutable objects',
+                          '[Concurrent::ThreadSafe::Util::Adder.new]'
+        end
+
         it 'registers no offense for class variable' do
           expect_no_offenses(surround('@@list = [1, 2]'))
         end

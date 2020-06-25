@@ -138,6 +138,7 @@ module RuboCop
         def strict_check(value)
           return if immutable_literal?(value)
           return if operation_produces_immutable_object?(value)
+          return if operation_produces_threadsafe_object?(value)
           return if frozen_string_literal?(value)
 
           add_offense(value)
@@ -215,6 +216,24 @@ module RuboCop
             (or (send (const nil? :ENV) :[] _) _)
             (send _ {:count :length :size} ...)
             (block (send _ {:count :length :size} ...) ...)
+          }
+        PATTERN
+
+        def_node_matcher :operation_produces_threadsafe_object?, <<-PATTERN
+          {
+            (send (const {nil? cbase} :Queue) :new ...)
+            (send
+              (const (const {nil? cbase} :ThreadSafe) {:Hash :Array})
+              :new ...)
+            (block
+              (send
+                (const (const {nil? cbase} :ThreadSafe) {:Hash :Array})
+                :new ...)
+              ...)
+            (send (const `(const {nil? cbase} :Concurrent) _) :new ...)
+            (block
+              (send (const `(const {nil? cbase} :Concurrent) _) :new ...)
+              ...)
           }
         PATTERN
 

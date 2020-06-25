@@ -357,11 +357,22 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
         it_behaves_like 'immutable objects', '2.1'
         it_behaves_like 'immutable objects', ':sym'
         it_behaves_like 'immutable objects', 'CONST'
+        it_behaves_like 'immutable objects', '::CONST'
         it_behaves_like 'immutable objects', 'Namespace::CONST'
+        it_behaves_like 'immutable objects', '::Namespace::CONST'
         it_behaves_like 'immutable objects', 'Struct.new'
+        it_behaves_like 'immutable objects', '::Struct.new'
         it_behaves_like 'immutable objects', 'Struct.new(:a, :b)'
+        it_behaves_like 'immutable objects', '::Struct.new(:a, :b)'
         it_behaves_like 'immutable objects', <<-RUBY.strip_indent
           Struct.new(:node) do
+            def assignment?
+              true
+            end
+          end
+        RUBY
+        it_behaves_like 'immutable objects', <<-RUBY.strip_indent
+          ::Struct.new(:node) do
             def assignment?
               true
             end
@@ -370,6 +381,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
 
         it_behaves_like 'immutable objects', '[1, 2].freeze'
         it_behaves_like 'immutable objects', 'Something.new.freeze'
+        it_behaves_like 'immutable objects', '::Something.new.freeze'
 
         context 'with thread-safe data structure' do
           it_behaves_like 'immutable objects', 'Queue.new'

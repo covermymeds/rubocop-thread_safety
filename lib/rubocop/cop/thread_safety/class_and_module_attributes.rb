@@ -27,6 +27,12 @@ module RuboCop
             ...)
         MATCHER
 
+        def_node_matcher :attr_internal?, <<-MATCHER
+          (send nil?
+            {:attr_internal :attr_internal_accessor :attr_internal_writer}
+            ...)
+        MATCHER
+
         def_node_matcher :class_attr?, <<-MATCHER
           (send nil?
             :class_attribute
@@ -43,7 +49,8 @@ module RuboCop
         private
 
         def singleton_attr?(node)
-          attr?(node) && node.ancestors.map(&:type).include?(:sclass)
+          (attr?(node) || attr_internal?(node)) &&
+            node.ancestors.map(&:type).include?(:sclass)
         end
       end
     end

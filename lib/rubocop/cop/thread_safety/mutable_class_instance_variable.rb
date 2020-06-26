@@ -230,9 +230,23 @@ module RuboCop
                 (const (const {nil? cbase} :ThreadSafe) {:Hash :Array})
                 :new ...)
               ...)
-            (send (const `(const {nil? cbase} :Concurrent) _) :new ...)
+            (send (const (const {nil? cbase} :Concurrent) _) :new ...)
             (block
-              (send (const `(const {nil? cbase} :Concurrent) _) :new ...)
+              (send (const (const {nil? cbase} :Concurrent) _) :new ...)
+              ...)
+            (send (const (const (const {nil? cbase} :Concurrent) _) _) :new ...)
+            (block
+              (send
+                (const (const (const {nil? cbase} :Concurrent) _) _)
+                :new ...)
+              ...)
+            (send
+              (const (const (const (const {nil? cbase} :Concurrent) _) _) _)
+              :new ...)
+            (block
+              (send
+                (const (const (const (const {nil? cbase} :Concurrent) _) _) _)
+                :new ...)
               ...)
           }
         PATTERN

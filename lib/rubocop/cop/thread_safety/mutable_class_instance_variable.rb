@@ -138,6 +138,7 @@ module RuboCop
         def strict_check(value)
           return if immutable_literal?(value)
           return if operation_produces_immutable_object?(value)
+          return if operation_produces_threadsafe_object?(value)
           return if frozen_string_literal?(value)
 
           add_offense(value)
@@ -205,16 +206,34 @@ module RuboCop
         def_node_matcher :operation_produces_immutable_object?, <<-PATTERN
           {
             (const _ _)
-            (send (const nil? :Struct) :new ...)
-            (block (send (const nil? :Struct) :new ...) ...)
+            (send (const {nil? cbase} :Struct) :new ...)
+            (block (send (const {nil? cbase} :Struct) :new ...) ...)
             (send _ :freeze)
             (send {float int} {:+ :- :* :** :/ :% :<<} _)
             (send _ {:+ :- :* :** :/ :%} {float int})
             (send _ {:== :=== :!= :<= :>= :< :>} _)
-            (send (const nil? :ENV) :[] _)
-            (or (send (const nil? :ENV) :[] _) _)
+            (send (const {nil? cbase} :ENV) :[] _)
+            (or (send (const {nil? cbase} :ENV) :[] _) _)
             (send _ {:count :length :size} ...)
             (block (send _ {:count :length :size} ...) ...)
+          }
+        PATTERN
+
+        def_node_matcher :operation_produces_threadsafe_object?, <<-PATTERN
+          {
+            (send (const {nil? cbase} :Queue) :new ...)
+            (send
+              (const (const {nil? cbase} :ThreadSafe) {:Hash :Array})
+              :new ...)
+            (block
+              (send
+                (const (const {nil? cbase} :ThreadSafe) {:Hash :Array})
+                :new ...)
+              ...)
+            (send (const `(const {nil? cbase} :Concurrent) _) :new ...)
+            (block
+              (send (const `(const {nil? cbase} :Concurrent) _) :new ...)
+              ...)
           }
         PATTERN
 

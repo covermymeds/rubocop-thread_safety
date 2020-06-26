@@ -14,7 +14,7 @@ module RuboCop
         MSG = 'Avoid starting new threads.'
 
         def_node_matcher :new_thread?, <<-MATCHER
-          (send (const nil? :Thread) :new)
+          (send (const {nil? cbase} :Thread) :new)
         MATCHER
 
         def on_send(node)

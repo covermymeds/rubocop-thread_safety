@@ -4,6 +4,10 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
                :config do
   subject(:cop) { described_class.new(config) }
   let(:msg) { 'Freeze mutable objects assigned to class instance variables.' }
+  if Gem::Requirement.new('< 0.69')
+                     .satisfied_by?(Gem::Version.new(RuboCop::Version::STRING))
+    let(:ruby_version) { 2.3 }
+  end
 
   let(:prefix) { nil }
   let(:suffix) { nil }

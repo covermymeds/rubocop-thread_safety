@@ -168,7 +168,9 @@ module RuboCop
         end
 
         def mutable_literal?(node)
-          node&.mutable_literal?
+          return if node.nil?
+
+          node.mutable_literal? || range_type?(node)
         end
 
         def immutable_literal?(node)

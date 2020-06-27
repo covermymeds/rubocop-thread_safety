@@ -181,8 +181,12 @@ module RuboCop
         end
 
         def requires_parentheses?(node)
-          node.range_type? ||
+          range_type?(node) ||
             (node.send_type? && node.loc.dot.nil?)
+        end
+
+        def range_type?(node)
+          node.erange_type? || node.irange_type?
         end
 
         def correct_splat_expansion(corrector, expr, splat_value)

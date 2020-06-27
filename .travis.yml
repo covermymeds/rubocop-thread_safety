@@ -9,8 +9,22 @@ rvm:
   - 2.6
   - 2.7
 
-matrix:
+gemfile:
+  - gemfiles/rubocop_0.51.gemfile
+  - gemfiles/rubocop_0.81.gemfile
+  - gemfiles/rubocop_0.86.gemfile
+
+jobs:
   fast_finish: true
+  exclude:
+  - rvm: 2.3.0
+    gemfile: gemfiles/rubocop_0.86.gemfile
+  - rvm: 2.5
+    gemfile: gemfiles/rubocop_0.51.gemfile
+  - rvm: 2.6
+    gemfile: gemfiles/rubocop_0.51.gemfile
+  - rvm: 2.7
+    gemfile: gemfiles/rubocop_0.51.gemfile
 
 before_install: gem install --remote bundler
 install:

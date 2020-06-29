@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-appraise 'rubocop-0.51' do
-  gem 'rubocop', '~> 0.51.0'
+appraise 'rubocop-0.53' do
+  gem 'rubocop', '~> 0.53.0'
 end
 
 appraise 'rubocop-0.81' do

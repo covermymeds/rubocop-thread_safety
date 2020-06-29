@@ -24,6 +24,10 @@ Style/AutoResourceCleanup:
 Style/CollectionMethods:
   Enabled: true
 
+Style/FrozenStringLiteralComment:
+  Exclude:
+    - "gemfiles/*.gemfile"
+
 Style/MethodCalledOnDoEndBlock:
   Enabled: true
   Exclude:
@@ -38,6 +42,10 @@ Style/OptionHash:
 
 Style/Send:
   Enabled: true
+
+Style/StringLiterals:
+  Exclude:
+    - "gemfiles/*.gemfile"
 
 Style/StringMethods:
   Enabled: true

@@ -38,6 +38,27 @@ Scan the application for just thread-safety issues:
 
 There are some added [configuration options](https://github.com/covermymeds/rubocop-thread_safety/blob/master/config/default.yml) that can be tweaked to modify the behaviour of these thread-safety cops.
 
+### Correcting code for thread-safety
+
+There are a few ways to improve thread-safety that stem around avoiding
+unsynchronized mutation of state that is shared between multiple threads.
+
+State shared between threads may take various forms, including:
+
+* Class variables (`@@name`). Note: these affect child classes too.
+* Class instance variables (`@name` in class context or class methods)
+* Constants (`NAME`). Ruby will warn if a constant is re-assigned to a new value but will allow it. Mutable objects can still be mutated (e.g. push to an array) even if they are assigned to a constant.
+* Globals (`$name`), with the possible exception of some special globals provided by ruby that are documented as thread-local like regular expression results.
+* Variables in the scope of created threads (where `Thread.new` is called).
+
+Improvements that would make shared state thread-safe include:
+
+* `freeze` objects to protect against mutation. Note: `freeze` is shallow, i.e. freezing an array will not also freeze its elements.
+* Use data structures or concurrency abstractions from [concurrent-ruby](https://github.com/ruby-concurrency/concurrent-ruby), e.g. `Concurrent::Map`
+* Use a `Mutex` or similar to `synchronize` access.
+* Use [`RequestStore`](https://github.com/steveklabnik/request_store)
+* Use `Thread.current[:name]`
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.

@@ -4,7 +4,6 @@ begin
   require 'pry'
 rescue LoadError
   # Pry isn't installed in CI.
-  nil
 end
 
 $LOAD_PATH.unshift File.expand_path('../lib', __dir__)

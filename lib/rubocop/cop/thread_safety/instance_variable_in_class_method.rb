@@ -29,6 +29,14 @@ module RuboCop
       #       end
       #     end
       #   end
+      #
+      #   module Example
+      #     module ClassMethods
+      #       def test(params)
+      #         @params = params
+      #       end
+      #     end
+      #   end
       class InstanceVariableInClassMethod < Cop
         MSG = 'Avoid instance variables in class methods.'
 
@@ -61,6 +69,7 @@ module RuboCop
         def class_method_definition?(node)
           in_defs?(node) ||
             in_def_sclass?(node) ||
+            in_def_class_methods?(node) ||
             singleton_method_definition?(node)
         end
 
@@ -78,6 +87,18 @@ module RuboCop
           defn&.ancestors&.any? do |ancestor|
             ancestor.type == :sclass
           end
+        end
+
+        def in_def_class_methods?(node)
+          defn = node.ancestors.find(&:def_type?)
+          return unless defn
+
+          mod = defn.ancestors.find do |ancestor|
+            %i[class module].include?(ancestor.type)
+          end
+          return unless mod
+
+          class_methods_module?(mod)
         end
 
         def singleton_method_definition?(node)
@@ -100,6 +121,10 @@ module RuboCop
         def instance_variable_call?(node)
           instance_variable_set_call?(node) || instance_variable_get_call?(node)
         end
+
+        def_node_matcher :class_methods_module?, <<-PATTERN
+          (module (const _ :ClassMethods) ...)
+        PATTERN
       end
     end
   end

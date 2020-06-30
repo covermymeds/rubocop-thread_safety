@@ -9,7 +9,6 @@ end
 $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 require 'rubocop-thread_safety'
 
-require 'powerpack/string/strip_indent'
 require 'rubocop/rspec/support'
 
 RSpec.configure do |config|

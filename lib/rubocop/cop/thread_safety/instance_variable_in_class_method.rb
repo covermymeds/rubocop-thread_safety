@@ -40,11 +40,11 @@ module RuboCop
       class InstanceVariableInClassMethod < Cop
         MSG = 'Avoid instance variables in class methods.'
 
-        def_node_matcher :instance_variable_set_call?, <<-MATCHER
+        def_node_matcher :instance_variable_set_call?, <<~MATCHER
           (send nil? :instance_variable_set (...) (...))
         MATCHER
 
-        def_node_matcher :instance_variable_get_call?, <<-MATCHER
+        def_node_matcher :instance_variable_get_call?, <<~MATCHER
           (send nil? :instance_variable_get (...))
         MATCHER
 
@@ -122,7 +122,7 @@ module RuboCop
           instance_variable_set_call?(node) || instance_variable_get_call?(node)
         end
 
-        def_node_matcher :class_methods_module?, <<-PATTERN
+        def_node_matcher :class_methods_module?, <<~PATTERN
           (module (const _ :ClassMethods) ...)
         PATTERN
       end

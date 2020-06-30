@@ -327,13 +327,13 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
 
         it 'freezes a heredoc' do
           new_source = autocorrect_source(surround(<<~RUBY))
-            @var = <<-HERE
+            @var = <<~HERE
               content
             HERE
           RUBY
 
           expect(new_source).to eq(surround(<<~RUBY))
-            @var = <<-HERE.freeze
+            @var = <<~HERE.freeze
               content
             HERE
           RUBY
@@ -577,13 +577,13 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
 
         it 'freezes a heredoc' do
           new_source = autocorrect_source(surround(<<~RUBY))
-            @var = <<-HERE
+            @var = <<~HERE
               content
             HERE
           RUBY
 
           expect(new_source).to eq(surround(<<~RUBY))
-            @var = <<-HERE.freeze
+            @var = <<~HERE.freeze
               content
             HERE
           RUBY

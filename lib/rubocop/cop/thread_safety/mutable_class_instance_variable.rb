@@ -34,7 +34,7 @@ module RuboCop
       #
       #   # good
       #   class Model
-      #     @var = <<-TESTING.freeze
+      #     @var = <<~TESTING.freeze
       #       This is a heredoc
       #     TESTING
       #   end
@@ -199,17 +199,17 @@ module RuboCop
           end
         end
 
-        def_node_matcher :define_singleton_method?, <<-PATTERN
+        def_node_matcher :define_singleton_method?, <<~PATTERN
           (block (send nil? :define_singleton_method ...) ...)
         PATTERN
 
-        def_node_matcher :splat_value, <<-PATTERN
+        def_node_matcher :splat_value, <<~PATTERN
           (array (splat $_))
         PATTERN
 
         # NOTE: Some of these patterns may not actually return an immutable
         # object but we will consider them immutable for this cop.
-        def_node_matcher :operation_produces_immutable_object?, <<-PATTERN
+        def_node_matcher :operation_produces_immutable_object?, <<~PATTERN
           {
             (const _ _)
             (send (const {nil? cbase} :Struct) :new ...)
@@ -225,7 +225,7 @@ module RuboCop
           }
         PATTERN
 
-        def_node_matcher :operation_produces_threadsafe_object?, <<-PATTERN
+        def_node_matcher :operation_produces_threadsafe_object?, <<~PATTERN
           {
             (send (const {nil? cbase} :Queue) :new ...)
             (send
@@ -257,7 +257,7 @@ module RuboCop
           }
         PATTERN
 
-        def_node_matcher :range_enclosed_in_parentheses?, <<-PATTERN
+        def_node_matcher :range_enclosed_in_parentheses?, <<~PATTERN
           (begin ({irange erange} _ _))
         PATTERN
       end

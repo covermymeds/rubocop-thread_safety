@@ -13,7 +13,7 @@ module RuboCop
       class NewThread < Cop
         MSG = 'Avoid starting new threads.'
 
-        def_node_matcher :new_thread?, <<-MATCHER
+        def_node_matcher :new_thread?, <<~MATCHER
           (send (const {nil? cbase} :Thread) :new)
         MATCHER
 

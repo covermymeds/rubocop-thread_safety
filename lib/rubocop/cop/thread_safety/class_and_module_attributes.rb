@@ -15,25 +15,25 @@ module RuboCop
       class ClassAndModuleAttributes < Cop
         MSG = 'Avoid mutating class and module attributes.'
 
-        def_node_matcher :mattr?, <<-MATCHER
+        def_node_matcher :mattr?, <<~MATCHER
           (send nil?
             {:mattr_writer :mattr_accessor :cattr_writer :cattr_accessor}
             ...)
         MATCHER
 
-        def_node_matcher :attr?, <<-MATCHER
+        def_node_matcher :attr?, <<~MATCHER
           (send nil?
             {:attr :attr_accessor :attr_writer}
             ...)
         MATCHER
 
-        def_node_matcher :attr_internal?, <<-MATCHER
+        def_node_matcher :attr_internal?, <<~MATCHER
           (send nil?
             {:attr_internal :attr_internal_accessor :attr_internal_writer}
             ...)
         MATCHER
 
-        def_node_matcher :class_attr?, <<-MATCHER
+        def_node_matcher :class_attr?, <<~MATCHER
           (send nil?
             :class_attribute
             ...)

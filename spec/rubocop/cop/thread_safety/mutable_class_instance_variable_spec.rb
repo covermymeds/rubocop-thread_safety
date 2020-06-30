@@ -4,6 +4,10 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
                :config do
   subject(:cop) { described_class.new(config) }
   let(:msg) { 'Freeze mutable objects assigned to class instance variables.' }
+  if Gem::Requirement.new('< 0.69')
+                     .satisfied_by?(Gem::Version.new(RuboCop::Version::STRING))
+    let(:ruby_version) { 2.3 }
+  end
 
   let(:prefix) { nil }
   let(:suffix) { nil }
@@ -215,7 +219,8 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
           # TODO: It is not yet decided when frozen string will be the default.
           # It has been abandoned for Ruby 3.0 but may default in the future.
           # So these tests are given a provisional value of 4.0.
-          if RuboCop::TargetRuby.supported_versions.include?(4.0)
+          if defined?(RuboCop::TargetRuby) &&
+             RuboCop::TargetRuby.supported_versions.include?(4.0)
             context 'when the target ruby version >= 4.0' do
               let(:ruby_version) { 4.0 }
 

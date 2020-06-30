@@ -1,20 +1,55 @@
-sudo: false
 cache: bundler
 language: ruby
 rvm:
-  - jruby-9.1.14.0
+  - jruby-9.2.9.0
   - 2.3.0
   - 2.4
   - 2.5
   - 2.6
   - 2.7
 
-matrix:
+gemfile:
+  - gemfiles/rubocop_0.53.gemfile
+  - gemfiles/rubocop_0.81.gemfile
+  - gemfiles/rubocop_0.86.gemfile
+
+script_rubocop: &script_rubocop
+  - bundle exec rspec
+  - bundle exec rubocop
+
+jobs:
   fast_finish: true
+  exclude:
+  - rvm: 2.3.0
+    gemfile: gemfiles/rubocop_0.86.gemfile
+  - rvm: 2.5
+    gemfile: gemfiles/rubocop_0.53.gemfile
+  - rvm: 2.6
+    gemfile: gemfiles/rubocop_0.53.gemfile
+  - rvm: 2.7
+    gemfile: gemfiles/rubocop_0.53.gemfile
+  include:
+  - rvm: jruby-9.2.9.0
+    gemfile: gemfiles/rubocop_0.81.gemfile
+    script: *script_rubocop
+  - rvm: 2.3.0
+    gemfile: gemfiles/rubocop_0.81.gemfile
+    script: *script_rubocop
+  - rvm: 2.4
+    gemfile: gemfiles/rubocop_0.81.gemfile
+    script: *script_rubocop
+  - rvm: 2.5
+    gemfile: gemfiles/rubocop_0.81.gemfile
+    script: *script_rubocop
+  - rvm: 2.6
+    gemfile: gemfiles/rubocop_0.81.gemfile
+    script: *script_rubocop
+  - rvm: 2.7
+    gemfile: gemfiles/rubocop_0.81.gemfile
+    script: *script_rubocop
 
 before_install: gem install --remote bundler
 install:
   - bundle install --retry=3
 script:
   - bundle exec rspec
-  - bundle exec rubocop

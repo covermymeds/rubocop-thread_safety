@@ -1,5 +1,12 @@
 AllCops:
   DisplayCopNames: true
+  TargetRubyVersion: 2.3
+
+Lint/RaiseException:
+  Enabled: true
+
+Lint/StructNewOverride:
+  Enabled: true
 
 Metrics/BlockLength:
   Exclude:
@@ -24,6 +31,19 @@ Style/AutoResourceCleanup:
 Style/CollectionMethods:
   Enabled: true
 
+Style/FrozenStringLiteralComment:
+  Exclude:
+    - "gemfiles/*.gemfile"
+
+Style/HashEachMethods:
+  Enabled: true
+
+Style/HashTransformKeys:
+  Enabled: false
+
+Style/HashTransformValues:
+  Enabled: false
+
 Style/MethodCalledOnDoEndBlock:
   Enabled: true
   Exclude:
@@ -38,6 +58,10 @@ Style/OptionHash:
 
 Style/Send:
   Enabled: true
+
+Style/StringLiterals:
+  Exclude:
+    - "gemfiles/*.gemfile"
 
 Style/StringMethods:
   Enabled: true

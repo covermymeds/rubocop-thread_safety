@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes do
 
   context 'when in the singleton class' do
     it 'registers an offense for `attr`' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         module Test
           class << self
             attr :foobar
@@ -17,7 +17,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes do
     end
 
     it 'registers an offense for `attr_accessor`' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         module Test
           class << self
             attr_accessor :foobar
@@ -28,7 +28,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes do
     end
 
     it 'registers an offense for `attr_writer`' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         module Test
           class << self
             attr_writer :foobar
@@ -39,7 +39,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes do
     end
 
     it 'registers no offense for `attr_reader`' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         module Test
           class << self
             attr_reader :foobar
@@ -49,7 +49,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes do
     end
 
     it 'registers an offense for `attr_internal`' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         module Test
           class << self
             attr_internal :foobar
@@ -60,7 +60,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes do
     end
 
     it 'registers an offense for `attr_internal_accessor`' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         module Test
           class << self
             attr_internal_accessor :foobar
@@ -71,7 +71,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes do
     end
 
     it 'registers an offense for `attr_internal_writer`' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         module Test
           class << self
             attr_internal_writer :foobar
@@ -82,7 +82,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes do
     end
 
     it 'registers no offense for `attr_internal_reader`' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         module Test
           class << self
             attr_internal_reader :foobar
@@ -93,7 +93,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes do
   end
 
   it 'registers an offense for `mattr_writer`' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       module Test
         mattr_writer :foobar
         ^^^^^^^^^^^^^^^^^^^^ #{msg}
@@ -102,7 +102,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes do
   end
 
   it 'registers an offense for `mattr_accessor`' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       module Test
         mattr_accessor :foobar
         ^^^^^^^^^^^^^^^^^^^^^^ #{msg}
@@ -111,7 +111,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes do
   end
 
   it 'registers an offense for `cattr_writer`' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       class Test
         cattr_writer :foobar
         ^^^^^^^^^^^^^^^^^^^^ #{msg}
@@ -120,7 +120,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes do
   end
 
   it 'registers an offense for `cattr_accessor`' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       class Test
         cattr_accessor :foobar
         ^^^^^^^^^^^^^^^^^^^^^^ #{msg}
@@ -129,7 +129,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes do
   end
 
   it 'registers an offense for `class_attribute`' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       class Test
         class_attribute :foobar
         ^^^^^^^^^^^^^^^^^^^^^^^ #{msg}
@@ -138,7 +138,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes do
   end
 
   it 'registers no offense for other class macro calls' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       class Test
         belongs_to :foobar
       end

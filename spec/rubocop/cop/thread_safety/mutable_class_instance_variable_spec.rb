@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
   shared_examples 'mutable objects' do |o|
     context 'when assigning with =' do
       it "registers an offense for #{o} assigned to a class ivar" do
-        expect_offense(surround(<<-RUBY.strip_indent))
+        expect_offense(surround(<<~RUBY))
           @var = #{o}
                  #{'^' * o.length} #{msg}
         RUBY
@@ -37,7 +37,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
 
     context 'when assigning with ||=' do
       it "registers an offense for #{o} assigned to a class ivar" do
-        expect_offense(surround(<<-RUBY.strip_indent))
+        expect_offense(surround(<<~RUBY))
           @var ||= #{o}
                    #{'^' * o.length} #{msg}
         RUBY
@@ -83,14 +83,14 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
 
     context 'inside a class singleton method' do
       let(:prefix) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           class Test
             class << self
               def some_method
         RUBY
       end
       let(:suffix) do
-        <<-RUBY.strip_indent
+        <<~RUBY
               end
             end
           end
@@ -152,7 +152,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
         context 'splat expansion' do
           context 'expansion of a range' do
             it 'registers an offense' do
-              expect_offense(surround(<<-RUBY.strip_indent))
+              expect_offense(surround(<<~RUBY))
                 @var = *1..10
                        ^^^^^^ #{msg}
               RUBY
@@ -165,7 +165,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
 
             context 'with parentheses' do
               it 'registers an offense' do
-                expect_offense(surround(<<-RUBY.strip_indent))
+                expect_offense(surround(<<~RUBY))
                   @var = *(1..10)
                          ^^^^^^^^ #{msg}
                 RUBY
@@ -261,7 +261,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
 
         context 'when assigning to multiple class ivars' do
           it 'registers an offense when first object is mutable' do
-            expect_offense(surround(<<-RUBY.strip_indent))
+            expect_offense(surround(<<~RUBY))
               @a, @b = [1], 1
                        ^^^ #{msg}
             RUBY
@@ -273,41 +273,41 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
           end
 
           it 'registers an offense when middle object is mutable' do
-            expect_offense(surround(<<-RUBY.strip_indent))
+            expect_offense(surround(<<~RUBY))
               @a, @b, @c = [1, { a: 1 }, [3].freeze]
                                ^^^^^^^^ #{msg}
             RUBY
           end
 
           it 'frezees middle object when mutable' do
-            new_source = autocorrect_source(surround(<<-RUBY.strip_indent))
+            new_source = autocorrect_source(surround(<<~RUBY))
               @a, @b, @c = [1, { a: 1 }, [3].freeze]
             RUBY
 
-            expect(new_source).to eq(surround(<<-RUBY.strip_indent))
+            expect(new_source).to eq(surround(<<~RUBY))
               @a, @b, @c = [1, { a: 1 }.freeze, [3].freeze]
             RUBY
           end
 
           it 'registers an offense when last object is mutable' do
-            expect_offense(surround(<<-RUBY.strip_indent))
+            expect_offense(surround(<<~RUBY))
               @a, _, @c = 1, [2].freeze, 'foo'
                                          ^^^^^ #{msg}
             RUBY
           end
 
           it 'freezes last object when mutable' do
-            new_source = autocorrect_source(surround(<<-RUBY.strip_indent))
+            new_source = autocorrect_source(surround(<<~RUBY))
               @a, _, @c = 1, [2].freeze, 'foo'
             RUBY
 
-            expect(new_source).to eq(surround(<<-RUBY.strip_indent))
+            expect(new_source).to eq(surround(<<~RUBY))
               @a, _, @c = 1, [2].freeze, 'foo'.freeze
             RUBY
           end
 
           it 'registers an offense for multiple mutable objects' do
-            expect_offense(surround(<<-RUBY.strip_indent))
+            expect_offense(surround(<<~RUBY))
               @a, @b, @c = 'foo', [2], 3
                            ^^^^^ #{msg}
                                   ^^^ #{msg}
@@ -315,25 +315,25 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
           end
 
           it 'freezes multiple mutable objects' do
-            new_source = autocorrect_source(surround(<<-RUBY.strip_indent))
+            new_source = autocorrect_source(surround(<<~RUBY))
               @a, @b, @c = ['foo', [2], 3]
             RUBY
 
-            expect(new_source).to eq(surround(<<-RUBY.strip_indent))
+            expect(new_source).to eq(surround(<<~RUBY))
               @a, @b, @c = ['foo'.freeze, [2].freeze, 3]
             RUBY
           end
         end
 
         it 'freezes a heredoc' do
-          new_source = autocorrect_source(surround(<<-RUBY.strip_indent))
-            @var = <<-HERE
+          new_source = autocorrect_source(surround(<<~RUBY))
+            @var = <<~HERE
               content
             HERE
           RUBY
 
-          expect(new_source).to eq(surround(<<-RUBY.strip_indent))
-            @var = <<-HERE.freeze
+          expect(new_source).to eq(surround(<<~RUBY))
+            @var = <<~HERE.freeze
               content
             HERE
           RUBY
@@ -369,14 +369,14 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
         it_behaves_like 'immutable objects', '::Struct.new'
         it_behaves_like 'immutable objects', 'Struct.new(:a, :b)'
         it_behaves_like 'immutable objects', '::Struct.new(:a, :b)'
-        it_behaves_like 'immutable objects', <<-RUBY.strip_indent
+        it_behaves_like 'immutable objects', <<~RUBY
           Struct.new(:node) do
             def assignment?
               true
             end
           end
         RUBY
-        it_behaves_like 'immutable objects', <<-RUBY.strip_indent
+        it_behaves_like 'immutable objects', <<~RUBY
           ::Struct.new(:node) do
             def assignment?
               true
@@ -397,10 +397,10 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
           it_behaves_like 'immutable objects', 'Concurrent::Array.new'
           it_behaves_like 'immutable objects', 'Concurrent::Hash.new'
           it_behaves_like 'immutable objects', '::Concurrent::Map.new'
-          it_behaves_like 'immutable objects', <<-RUBY.strip_indent
+          it_behaves_like 'immutable objects', <<~RUBY
             Concurrent::Map.new(initial_capacity: 4)
           RUBY
-          it_behaves_like 'immutable objects', <<-RUBY.strip_indent
+          it_behaves_like 'immutable objects', <<~RUBY
             Concurrent::Map.new do |h, key|
               h.fetch_or_store(key, Concurrent::Map.new)
             end
@@ -435,7 +435,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
         context 'splat expansion' do
           context 'expansion of a range' do
             it 'registers an offense' do
-              expect_offense(surround(<<-RUBY.strip_indent))
+              expect_offense(surround(<<~RUBY))
                 @var = *1..10
                        ^^^^^^ #{msg}
               RUBY
@@ -448,7 +448,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
 
             context 'with parentheses' do
               it 'registers an offense' do
-                expect_offense(surround(<<-RUBY.strip_indent))
+                expect_offense(surround(<<~RUBY))
                   @var = *(1..10)
                          ^^^^^^^^ #{msg}
                 RUBY
@@ -466,7 +466,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
           shared_examples 'operator methods' do |o|
             it 'registers an offense' do
               c = '^' * o.length
-              expect_offense(surround(<<-RUBY.strip_indent))
+              expect_offense(surround(<<~RUBY))
                 @var = FOO #{o} BAR
                        ^^^^#{c}^^^^ #{msg}
               RUBY
@@ -488,7 +488,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
 
         context 'when assigning with multiple operator calls' do
           it 'registers an offense' do
-            expect_offense(surround(<<-RUBY.strip_indent))
+            expect_offense(surround(<<~RUBY))
               @a = [1].freeze
               @b = [2].freeze
               @c = [3].freeze
@@ -498,14 +498,14 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
           end
 
           it 'corrects by wrapping in parentheses and freezing' do
-            new_source = autocorrect_source(surround(<<-RUBY.strip_indent))
+            new_source = autocorrect_source(surround(<<~RUBY))
               @a = [1].freeze
               @b = [2].freeze
               @c = [3].freeze
               @var = @a + @b + @c
             RUBY
 
-            expect(new_source).to eq(surround(<<-RUBY.strip_indent))
+            expect(new_source).to eq(surround(<<~RUBY))
               @a = [1].freeze
               @b = [2].freeze
               @c = [3].freeze
@@ -534,7 +534,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
 
         context 'operators that produce unfrozen objects' do
           it 'registers an offense when operating on a constant and a string' do
-            expect_offense(surround(<<-RUBY.strip_indent))
+            expect_offense(surround(<<~RUBY))
               @var = FOO + 'bar'
                      ^^^^^^^^^^^ #{msg}
             RUBY
@@ -546,18 +546,18 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
           end
 
           it 'registers an offense when operating on multiple strings' do
-            expect_offense(surround(<<-RUBY.strip_indent))
+            expect_offense(surround(<<~RUBY))
               @var = 'foo' + 'bar' + 'baz'
                      ^^^^^^^^^^^^^^^^^^^^^ #{msg}
             RUBY
           end
 
           it 'autocorrects with parentheses' do
-            new_source = autocorrect_source(surround(<<-RUBY.strip_indent))
+            new_source = autocorrect_source(surround(<<~RUBY))
               @var = 'foo' + 'bar' + 'baz'
             RUBY
 
-            expect(new_source).to eq(surround(<<-RUBY.strip_indent))
+            expect(new_source).to eq(surround(<<~RUBY))
               @var = ('foo' + 'bar' + 'baz').freeze
             RUBY
           end
@@ -576,14 +576,14 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
         end
 
         it 'freezes a heredoc' do
-          new_source = autocorrect_source(surround(<<-RUBY.strip_indent))
-            @var = <<-HERE
+          new_source = autocorrect_source(surround(<<~RUBY))
+            @var = <<~HERE
               content
             HERE
           RUBY
 
-          expect(new_source).to eq(surround(<<-RUBY.strip_indent))
-            @var = <<-HERE.freeze
+          expect(new_source).to eq(surround(<<~RUBY))
+            @var = <<~HERE.freeze
               content
             HERE
           RUBY
@@ -609,7 +609,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
 
         context 'when assigning to multiple class ivars' do
           it 'registers an offense when first object is mutable' do
-            expect_offense(surround(<<-RUBY.strip_indent))
+            expect_offense(surround(<<~RUBY))
               @a, @b = [1], 1
                        ^^^ #{msg}
             RUBY
@@ -621,41 +621,41 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
           end
 
           it 'registers an offense when middle object is mutable' do
-            expect_offense(surround(<<-RUBY.strip_indent))
+            expect_offense(surround(<<~RUBY))
               @a, @b, @c = [1, { a: 1 }, [3].freeze]
                                ^^^^^^^^ #{msg}
             RUBY
           end
 
           it 'frezees middle object when mutable' do
-            new_source = autocorrect_source(surround(<<-RUBY.strip_indent))
+            new_source = autocorrect_source(surround(<<~RUBY))
               @a, @b, @c = [1, { a: 1 }, [3].freeze]
             RUBY
 
-            expect(new_source).to eq(surround(<<-RUBY.strip_indent))
+            expect(new_source).to eq(surround(<<~RUBY))
               @a, @b, @c = [1, { a: 1 }.freeze, [3].freeze]
             RUBY
           end
 
           it 'registers an offense when last object is mutable' do
-            expect_offense(surround(<<-RUBY.strip_indent))
+            expect_offense(surround(<<~RUBY))
               @a, _, @c = 1, [2].freeze, 'foo'
                                          ^^^^^ #{msg}
             RUBY
           end
 
           it 'freezes last object when mutable' do
-            new_source = autocorrect_source(surround(<<-RUBY.strip_indent))
+            new_source = autocorrect_source(surround(<<~RUBY))
               @a, _, @c = 1, [2].freeze, 'foo'
             RUBY
 
-            expect(new_source).to eq(surround(<<-RUBY.strip_indent))
+            expect(new_source).to eq(surround(<<~RUBY))
               @a, _, @c = 1, [2].freeze, 'foo'.freeze
             RUBY
           end
 
           it 'registers an offense for multiple mutable objects' do
-            expect_offense(surround(<<-RUBY.strip_indent))
+            expect_offense(surround(<<~RUBY))
               @a, @b, @c = 'foo', [2], 3
                            ^^^^^ #{msg}
                                   ^^^ #{msg}
@@ -663,11 +663,11 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
           end
 
           it 'freezes multiple mutable objects' do
-            new_source = autocorrect_source(surround(<<-RUBY.strip_indent))
+            new_source = autocorrect_source(surround(<<~RUBY))
               @a, @b, @c = ['foo', [2], 3]
             RUBY
 
-            expect(new_source).to eq(surround(<<-RUBY.strip_indent))
+            expect(new_source).to eq(surround(<<~RUBY))
               @a, @b, @c = ['foo'.freeze, [2].freeze, 3]
             RUBY
           end

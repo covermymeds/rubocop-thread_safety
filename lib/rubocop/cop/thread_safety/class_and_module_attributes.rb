@@ -50,7 +50,19 @@ module RuboCop
 
         def singleton_attr?(node)
           (attr?(node) || attr_internal?(node)) &&
-            node.ancestors.map(&:type).include?(:sclass)
+            defined_in_singleton_class?(node)
+        end
+
+        def defined_in_singleton_class?(node)
+          node.ancestors.each do |ancestor|
+            case ancestor.type
+            when :def then return false
+            when :sclass then return true
+            else next
+            end
+          end
+
+          false
         end
       end
     end

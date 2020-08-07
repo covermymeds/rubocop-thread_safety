@@ -90,6 +90,20 @@ RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes do
         end
       RUBY
     end
+
+    context 'when in a singleton class method' do
+      it 'registers no offense for `attr_accessor`' do
+        expect_no_offenses(<<~RUBY)
+          module Test
+            class << self
+              def add_foobar_attr
+                attr_accessor :foobar
+              end
+            end
+          end
+        RUBY
+      end
+    end
   end
 
   it 'registers an offense for `mattr_writer`' do

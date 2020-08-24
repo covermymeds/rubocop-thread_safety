@@ -28,3 +28,4 @@ ThreadSafety/NewThread:
   Description: >-
                  Avoid starting new threads.
                  Let a framework like Sidekiq handle the threads.
+  Enabled: true

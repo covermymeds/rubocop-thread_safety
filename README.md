@@ -56,6 +56,7 @@ Improvements that would make shared state thread-safe include:
 * `freeze` objects to protect against mutation. Note: `freeze` is shallow, i.e. freezing an array will not also freeze its elements.
 * Use data structures or concurrency abstractions from [concurrent-ruby](https://github.com/ruby-concurrency/concurrent-ruby), e.g. `Concurrent::Map`
 * Use a `Mutex` or similar to `synchronize` access.
+* Use [`ActiveSupport::CurrentAttributes`](https://api.rubyonrails.org/classes/ActiveSupport/CurrentAttributes.html)
 * Use [`RequestStore`](https://github.com/steveklabnik/request_store)
 * Use `Thread.current[:name]`
 

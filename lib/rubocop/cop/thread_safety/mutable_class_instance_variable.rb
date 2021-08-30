@@ -177,11 +177,6 @@ module RuboCop
           node.nil? || node.immutable_literal?
         end
 
-        def frozen_string_literal?(node)
-          FROZEN_STRING_LITERAL_TYPES.include?(node.type) &&
-            frozen_string_literals_enabled?
-        end
-
         def requires_parentheses?(node)
           range_type?(node) ||
             (node.send_type? && node.loc.dot.nil?)

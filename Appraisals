@@ -14,3 +14,10 @@ if Gem::Requirement.new('>= 2.4.0')
     gem 'rubocop', '~> 0.86.0'
   end
 end
+
+if Gem::Requirement.new('>= 2.5.0')
+                   .satisfied_by?(Gem::Version.new(RUBY_VERSION))
+  appraise 'rubocop-1.20' do
+    gem 'rubocop', '~> 1.20.0'
+  end
+end

@@ -7,11 +7,13 @@ rvm:
   - 2.5
   - 2.6
   - 2.7
+  - 3.0
 
 gemfile:
   - gemfiles/rubocop_0.53.gemfile
   - gemfiles/rubocop_0.81.gemfile
   - gemfiles/rubocop_0.86.gemfile
+  - gemfiles/rubocop_1.20.gemfile
 
 script_rubocop: &script_rubocop
   - bundle exec rspec
@@ -22,11 +24,15 @@ jobs:
   exclude:
   - rvm: 2.3.0
     gemfile: gemfiles/rubocop_0.86.gemfile
+  - rvm: 2.3.0
+    gemfile: gemfiles/rubocop_1.20.gemfile
   - rvm: 2.5
     gemfile: gemfiles/rubocop_0.53.gemfile
   - rvm: 2.6
     gemfile: gemfiles/rubocop_0.53.gemfile
   - rvm: 2.7
+    gemfile: gemfiles/rubocop_0.53.gemfile
+  - rvm: 3.0
     gemfile: gemfiles/rubocop_0.53.gemfile
   include:
   - rvm: jruby-9.2.9.0
@@ -45,6 +51,9 @@ jobs:
     gemfile: gemfiles/rubocop_0.81.gemfile
     script: *script_rubocop
   - rvm: 2.7
+    gemfile: gemfiles/rubocop_0.81.gemfile
+    script: *script_rubocop
+  - rvm: 3.0
     gemfile: gemfiles/rubocop_0.81.gemfile
     script: *script_rubocop
 

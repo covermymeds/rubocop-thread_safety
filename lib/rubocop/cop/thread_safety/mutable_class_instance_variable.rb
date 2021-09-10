@@ -77,6 +77,8 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         MSG = 'Freeze mutable objects assigned to class instance variables.'
+        FROZEN_STRING_LITERAL_TYPES_RUBY27 = %i[str dstr].freeze
+        FROZEN_STRING_LITERAL_TYPES_RUBY30 = %i[str].freeze
 
         def on_ivasgn(node)
           return unless in_class?(node)
@@ -126,6 +128,15 @@ module RuboCop
         end
 
         private
+
+        def frozen_string_literal?(node)
+          literal_types = if target_ruby_version >= 3.0
+                            FROZEN_STRING_LITERAL_TYPES_RUBY30
+                          else
+                            FROZEN_STRING_LITERAL_TYPES_RUBY27
+                          end
+          literal_types.include?(node.type) && frozen_string_literals_enabled?
+        end
 
         def on_assignment(value)
           if style == :strict

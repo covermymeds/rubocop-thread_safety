@@ -7,10 +7,10 @@ Thread-safety analysis for your projects, as an extension to
 
 ### Installation into an application
 
-Add this line to your application's Gemfile:
+Add this line to your application's Gemfile (using `require: false` as it's a standalone tool):
 
 ```ruby
-gem 'rubocop-thread_safety'
+gem 'rubocop-thread_safety', require: false
 ```
 
 Install it with Bundler by invoking:

@@ -174,6 +174,7 @@ module RuboCop
 
         def container?(node)
           return true if define_singleton_method?(node)
+          return true if define_method?(node)
 
           %i[def defs class module].include?(node.type)
         end
@@ -207,6 +208,10 @@ module RuboCop
 
         def_node_matcher :define_singleton_method?, <<~PATTERN
           (block (send nil? :define_singleton_method ...) ...)
+        PATTERN
+
+        def_node_matcher :define_method?, <<~PATTERN
+          (block (send nil? :define_method ...) ...)
         PATTERN
 
         def_node_matcher :splat_value, <<~PATTERN

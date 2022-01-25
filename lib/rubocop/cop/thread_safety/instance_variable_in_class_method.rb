@@ -50,6 +50,7 @@ module RuboCop
 
         def on_ivar(node)
           return unless class_method_definition?(node)
+          return if define_method?(node)
           return if synchronized?(node)
 
           add_offense(node, location: :name, message: MSG)
@@ -59,6 +60,7 @@ module RuboCop
         def on_send(node)
           return unless instance_variable_call?(node)
           return unless class_method_definition?(node)
+          return if define_method?(node)
           return if synchronized?(node)
 
           add_offense(node, message: MSG)
@@ -67,6 +69,8 @@ module RuboCop
         private
 
         def class_method_definition?(node)
+          return false if define_method?(node)
+
           in_defs?(node) ||
             in_def_sclass?(node) ||
             in_def_class_methods?(node) ||
@@ -121,6 +125,10 @@ module RuboCop
         def instance_variable_call?(node)
           instance_variable_set_call?(node) || instance_variable_get_call?(node)
         end
+
+        def_node_matcher :define_method?, <<~PATTERN
+          (block (send nil? :define_method ...) ...)
+        PATTERN
 
         def_node_matcher :class_methods_module?, <<~PATTERN
           (module (const _ :ClassMethods) ...)

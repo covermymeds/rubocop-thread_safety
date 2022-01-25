@@ -50,7 +50,7 @@ module RuboCop
 
         def on_ivar(node)
           return unless class_method_definition?(node)
-          return if define_method?(node)
+          return if method_definition?(node)
           return if synchronized?(node)
 
           add_offense(node, location: :name, message: MSG)
@@ -60,7 +60,7 @@ module RuboCop
         def on_send(node)
           return unless instance_variable_call?(node)
           return unless class_method_definition?(node)
-          return if define_method?(node)
+          return if method_definition?(node)
           return if synchronized?(node)
 
           add_offense(node, message: MSG)
@@ -69,7 +69,7 @@ module RuboCop
         private
 
         def class_method_definition?(node)
-          return false if define_method?(node)
+          return false if method_definition?(node)
 
           in_defs?(node) ||
             in_def_sclass?(node) ||
@@ -113,6 +113,14 @@ module RuboCop
           end
         end
 
+        def method_definition?(node)
+          node.ancestors.any? do |ancestor|
+            next unless ancestor.children.first.is_a? AST::SendNode
+
+            ancestor.children.first.command? :define_method
+          end
+        end
+
         def synchronized?(node)
           node.ancestors.find do |ancestor|
             next unless ancestor.block_type?
@@ -125,10 +133,6 @@ module RuboCop
         def instance_variable_call?(node)
           instance_variable_set_call?(node) || instance_variable_get_call?(node)
         end
-
-        def_node_matcher :define_method?, <<~PATTERN
-          (block (send nil? :define_method ...) ...)
-        PATTERN
 
         def_node_matcher :class_methods_module?, <<~PATTERN
           (module (const _ :ClassMethods) ...)

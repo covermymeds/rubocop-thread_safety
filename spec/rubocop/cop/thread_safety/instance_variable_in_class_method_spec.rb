@@ -39,6 +39,18 @@ RSpec.describe RuboCop::Cop::ThreadSafety::InstanceVariableInClassMethod do
     RUBY
   end
 
+  it 'registers no offense for assigning an ivar in define_method' do
+    expect_no_offenses(<<~RUBY)
+      class Test
+        def self.factory_method
+          define_method(:some_method) do |params|
+            @params = params
+          end
+        end
+      end
+    RUBY
+  end
+
   it 'registers an offense for reading an ivar in a class method' do
     expect_offense(<<~RUBY)
       class Test
@@ -179,6 +191,18 @@ RSpec.describe RuboCop::Cop::ThreadSafety::InstanceVariableInClassMethod do
         end
 
         module_function :some_method
+      end
+    RUBY
+  end
+
+  it 'registers no offense for ivar_set in define_method' do
+    expect_no_offenses(<<~RUBY)
+      class Test
+        def self.factory_method
+          define_method(:some_method) do |params|
+            instance_variable_set(:@params, params)
+          end
+        end
       end
     RUBY
   end

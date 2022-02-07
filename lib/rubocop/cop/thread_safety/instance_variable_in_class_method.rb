@@ -66,6 +66,7 @@ module RuboCop
 
         def on_ivar(node)
           return unless class_method_definition?(node)
+          return if method_definition?(node)
           return if synchronized?(node)
 
           add_offense(node, location: :name, message: MSG)
@@ -75,6 +76,7 @@ module RuboCop
         def on_send(node)
           return unless instance_variable_call?(node)
           return unless class_method_definition?(node)
+          return if method_definition?(node)
           return if synchronized?(node)
 
           add_offense(node, message: MSG)
@@ -83,6 +85,8 @@ module RuboCop
         private
 
         def class_method_definition?(node)
+          return false if method_definition?(node)
+
           in_defs?(node) ||
             in_def_sclass?(node) ||
             in_def_class_methods?(node) ||
@@ -131,6 +135,14 @@ module RuboCop
             next unless ancestor.children.first.is_a? AST::SendNode
 
             ancestor.children.first.command? :define_singleton_method
+          end
+        end
+
+        def method_definition?(node)
+          node.ancestors.any? do |ancestor|
+            next unless ancestor.children.first.is_a? AST::SendNode
+
+            ancestor.children.first.command? :define_method
           end
         end
 

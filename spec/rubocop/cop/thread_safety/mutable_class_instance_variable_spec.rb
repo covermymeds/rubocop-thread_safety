@@ -108,6 +108,14 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
 
       it_behaves_like 'immutable objects', '[1, 2]'
     end
+
+    context 'inside define_method' do
+      let(:prefix) { "class Test\n  define_method(:name) do" }
+      let(:suffix) { "  end\nend" }
+      let(:indent) { '    ' }
+
+      it_behaves_like 'immutable objects', '[1, 2]'
+    end
   end
 
   context 'Strict: false' do

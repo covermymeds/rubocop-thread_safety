@@ -131,6 +131,58 @@ RSpec.describe RuboCop::Cop::ThreadSafety::InstanceVariableInClassMethod do
     RUBY
   end
 
+  it 'registers an offense for ivar_set in a method below module_function directive' do
+    expect_offense(<<~RUBY)
+      module Test
+        module_function
+
+        def some_method(params)
+          instance_variable_set(:@params, params)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid instance variables in class methods.
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense for ivar_set in a method marked by module_function' do
+    expect_offense(<<~RUBY)
+      module Test
+        def some_method(params)
+          instance_variable_set(:@params, params)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid instance variables in class methods.
+        end
+
+        module_function :some_method
+      end
+    RUBY
+  end
+
+  it 'registers an offense for assigning an ivar in a method below module_function directive' do
+    expect_offense(<<~RUBY)
+      module Test
+        module_function
+
+        def some_method(params)
+          @params = params
+          ^^^^^^^ Avoid instance variables in class methods.
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense for assigning an ivar in a method marked by module_function' do
+    expect_offense(<<~RUBY)
+      module Test
+        def some_method(params)
+          @params = params
+          ^^^^^^^ Avoid instance variables in class methods.
+        end
+
+        module_function :some_method
+      end
+    RUBY
+  end
+
   it 'registers no offense for using ivar_get on object in a class method' do
     expect_no_offenses(<<~RUBY)
       class Test
@@ -183,6 +235,34 @@ RSpec.describe RuboCop::Cop::ThreadSafety::InstanceVariableInClassMethod do
             @params = params
           end
         end
+      end
+    RUBY
+  end
+
+  it 'registers no offense for assigning an ivar in a method above module_function directive' do
+    expect_no_offenses(<<~RUBY)
+      module Test
+        def some_method(params)
+          @params = params
+        end
+
+        module_function
+      end
+    RUBY
+  end
+
+  it 'registers no offense for assigning an ivar in a method not marked by module_function' do
+    expect_no_offenses(<<~RUBY)
+      module Test
+        def some_method(params)
+          @params = params
+        end
+
+        def another_method(params)
+          puts params
+        end
+
+        module_function :another_method
       end
     RUBY
   end

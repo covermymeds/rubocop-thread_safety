@@ -37,6 +37,22 @@ module RuboCop
       #       end
       #     end
       #   end
+      #
+      #   module Example
+      #     module_function
+      #
+      #     def test(params)
+      #       @params = params
+      #     end
+      #   end
+      #
+      #   module Example
+      #     def test(params)
+      #       @params = params
+      #     end
+      #
+      #     module_function :test
+      #   end
       class InstanceVariableInClassMethod < Cop
         MSG = 'Avoid instance variables in class methods.'
 
@@ -74,6 +90,7 @@ module RuboCop
           in_defs?(node) ||
             in_def_sclass?(node) ||
             in_def_class_methods?(node) ||
+            in_def_module_function?(node) ||
             singleton_method_definition?(node)
         end
 
@@ -105,6 +122,14 @@ module RuboCop
           class_methods_module?(mod)
         end
 
+        def in_def_module_function?(node)
+          defn = node.ancestors.find(&:def_type?)
+          return unless defn
+
+          defn.left_siblings.any? { |sibling| module_function_bare_access_modifier?(sibling) } ||
+            defn.right_siblings.any? { |sibling| module_function_for?(sibling, defn.method_name) }
+        end
+
         def singleton_method_definition?(node)
           node.ancestors.any? do |ancestor|
             next unless ancestor.children.first.is_a? AST::SendNode
@@ -134,8 +159,22 @@ module RuboCop
           instance_variable_set_call?(node) || instance_variable_get_call?(node)
         end
 
+        def module_function_bare_access_modifier?(node)
+          return false unless node
+
+          node.send_type? && node.bare_access_modifier? && node.method?(:module_function)
+        end
+
+        def match_name?(arg_name, method_name)
+          arg_name.to_sym == method_name.to_sym
+        end
+
         def_node_matcher :class_methods_module?, <<~PATTERN
           (module (const _ :ClassMethods) ...)
+        PATTERN
+
+        def_node_matcher :module_function_for?, <<~PATTERN
+          (send nil? {:module_function} ({sym str} #match_name?(%1)))
         PATTERN
       end
     end

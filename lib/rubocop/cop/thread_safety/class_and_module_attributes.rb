@@ -14,6 +14,12 @@ module RuboCop
       #   end
       class ClassAndModuleAttributes < Cop
         MSG = 'Avoid mutating class and module attributes.'
+        RESTRICT_ON_SEND = %i[
+          mattr_writer mattr_accessor cattr_writer cattr_accessor
+          class_attribute
+          attr attr_accessor attr_writer
+          attr_internal attr_internal_accessor attr_internal_writer
+        ].freeze
 
         def_node_matcher :mattr?, <<~MATCHER
           (send nil?

@@ -55,6 +55,10 @@ module RuboCop
       #   end
       class InstanceVariableInClassMethod < Cop
         MSG = 'Avoid instance variables in class methods.'
+        RESTRICT_ON_SEND = %i[
+          instance_variable_set
+          instance_variable_get
+        ].freeze
 
         def_node_matcher :instance_variable_set_call?, <<~MATCHER
           (send nil? :instance_variable_set (...) (...))

@@ -12,6 +12,7 @@ module RuboCop
       #   Thread.new { do_work }
       class NewThread < Cop
         MSG = 'Avoid starting new threads.'
+        RESTRICT_ON_SEND = %i[new].freeze
 
         def_node_matcher :new_thread?, <<~MATCHER
           (send (const {nil? cbase} :Thread) :new)

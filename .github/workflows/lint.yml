@@ -1,0 +1,19 @@
+name: Lint 
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+
+    runs-on: ubuntu-latest
+    name: Rubocop
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        bundler-cache: true # 'bundle install' and cache gems
+        ruby-version: "2.7" 
+    - name: Run Rubocop 
+      run: bundle exec rubocop

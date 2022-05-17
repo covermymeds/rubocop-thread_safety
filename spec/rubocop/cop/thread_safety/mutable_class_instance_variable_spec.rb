@@ -23,9 +23,9 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
   shared_examples 'mutable objects' do |o|
     context 'when assigning with =' do
       it "registers an offense for #{o} assigned to a class ivar" do
-        expect_offense(surround(<<~RUBY))
-          @var = #{o}
-                 #{'^' * o.length} #{msg}
+        expect_offense(surround(<<~RUBY), o: o)
+          @var = %{o}
+                 ^{o} #{msg}
         RUBY
       end
 
@@ -37,9 +37,9 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
 
     context 'when assigning with ||=' do
       it "registers an offense for #{o} assigned to a class ivar" do
-        expect_offense(surround(<<~RUBY))
-          @var ||= #{o}
-                   #{'^' * o.length} #{msg}
+        expect_offense(surround(<<~RUBY), o: o)
+          @var ||= %{o}
+                   ^{o} #{msg}
         RUBY
       end
 
@@ -473,10 +473,9 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
         context 'when assigning with an operator' do
           shared_examples 'operator methods' do |o|
             it 'registers an offense' do
-              c = '^' * o.length
-              expect_offense(surround(<<~RUBY))
-                @var = FOO #{o} BAR
-                       ^^^^#{c}^^^^ #{msg}
+              expect_offense(surround(<<~RUBY), o: o)
+                @var = FOO %{o} BAR
+                       ^^^^^{o}^^^^ #{msg}
               RUBY
             end
 

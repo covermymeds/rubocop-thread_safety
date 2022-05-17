@@ -1,5 +1,11 @@
 # RuboCop::ThreadSafety
 
+## Notice of official fork
+
+This project is now part of the RuboCop organization at [rubocop/rubocop-thread_safety](https://github.com/rubocop/rubocop-thread_safety). Please follow development there.
+
+---
+
 Thread-safety analysis for your projects, as an extension to
 [RuboCop](https://github.com/bbatsov/rubocop).
 

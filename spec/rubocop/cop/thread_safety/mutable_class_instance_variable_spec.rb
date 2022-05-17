@@ -27,11 +27,10 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
           @var = %{o}
                  ^{o} #{msg}
         RUBY
-      end
 
-      it 'auto-corrects by adding .freeze' do
-        new_source = autocorrect_source(surround("@var = #{o}"))
-        expect(new_source).to eq(surround("@var = #{o}.freeze"))
+        expect_correction(surround(<<~RUBY))
+          @var = #{o}.freeze
+        RUBY
       end
     end
 
@@ -41,11 +40,10 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
           @var ||= %{o}
                    ^{o} #{msg}
         RUBY
-      end
 
-      it 'auto-corrects by adding .freeze' do
-        new_source = autocorrect_source(surround("@var ||= #{o}"))
-        expect(new_source).to eq(surround("@var ||= #{o}.freeze"))
+        expect_correction(surround(<<~RUBY))
+          @var ||= #{o}.freeze
+        RUBY
       end
     end
   end
@@ -164,11 +162,10 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
                 @var = *1..10
                        ^^^^^^ #{msg}
               RUBY
-            end
 
-            it 'corrects to use to_a.freeze' do
-              new_source = autocorrect_source(surround('@var = *1..10'))
-              expect(new_source).to eq(surround('@var = (1..10).to_a.freeze'))
+              expect_correction(surround(<<~RUBY))
+                @var = (1..10).to_a.freeze
+              RUBY
             end
 
             context 'with parentheses' do
@@ -177,11 +174,10 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
                   @var = *(1..10)
                          ^^^^^^^^ #{msg}
                 RUBY
-              end
 
-              it 'corrects to use to_a.freeze' do
-                new_source = autocorrect_source(surround('@var = *(1..10)'))
-                expect(new_source).to eq(surround('@var = (1..10).to_a.freeze'))
+                expect_correction(surround(<<~RUBY))
+                  @var = (1..10).to_a.freeze
+                RUBY
               end
             end
           end
@@ -189,37 +185,73 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
 
         context 'when assigning an array without brackets' do
           it 'adds brackets when auto-correcting' do
-            new_source = autocorrect_source(surround('@var = YYY, ZZZ'))
-            expect(new_source).to eq(surround('@var = [YYY, ZZZ].freeze'))
+            expect_offense(surround(<<~RUBY))
+              @var = YYY, ZZZ
+                     ^^^^^^^^ #{msg}
+            RUBY
+
+            expect_correction(surround(<<~RUBY))
+              @var = [YYY, ZZZ].freeze
+            RUBY
           end
 
           it 'does not add brackets to %w() arrays' do
-            new_source = autocorrect_source(surround('@var = %w(YYY ZZZ)'))
-            expect(new_source).to eq(surround('@var = %w(YYY ZZZ).freeze'))
+            expect_offense(surround(<<~RUBY))
+              @var = %w(YYY ZZZ)
+                     ^^^^^^^^^^^ #{msg}
+            RUBY
+
+            expect_correction(surround(<<~RUBY))
+              @var = %w(YYY ZZZ).freeze
+            RUBY
           end
         end
 
         context 'when assigning a range (irange) without parentheses' do
           it 'adds parentheses when auto-correcting' do
-            new_source = autocorrect_source(surround('@var = 1..99'))
-            expect(new_source).to eq(surround('@var = (1..99).freeze'))
+            expect_offense(surround(<<~RUBY))
+              @var = 1..99
+                     ^^^^^ #{msg}
+            RUBY
+
+            expect_correction(surround(<<~RUBY))
+              @var = (1..99).freeze
+            RUBY
           end
 
           it 'does not add parenetheses to range enclosed in parentheses' do
-            new_source = autocorrect_source(surround('@var = (1..99)'))
-            expect(new_source).to eq(surround('@var = (1..99).freeze'))
+            expect_offense(surround(<<~RUBY))
+              @var = (1..99)
+                     ^^^^^^^ #{msg}
+            RUBY
+
+            expect_correction(surround(<<~RUBY))
+              @var = (1..99).freeze
+            RUBY
           end
         end
 
         context 'when assigning a range (erange) without parentheses' do
           it 'adds parentheses when auto-correcting' do
-            new_source = autocorrect_source(surround('@var = 1...99'))
-            expect(new_source).to eq(surround('@var = (1...99).freeze'))
+            expect_offense(surround(<<~RUBY))
+              @var = 1...99
+                     ^^^^^^ #{msg}
+            RUBY
+
+            expect_correction(surround(<<~RUBY))
+              @var = (1...99).freeze
+            RUBY
           end
 
           it 'does not add parentheses to range enclosed in parentheses' do
-            new_source = autocorrect_source(surround('@var = (1...99)'))
-            expect(new_source).to eq(surround('@var = (1...99).freeze'))
+            expect_offense(surround(<<~RUBY))
+              @var = (1...99)
+                     ^^^^^^^^ #{msg}
+            RUBY
+
+            expect_correction(surround(<<~RUBY))
+              @var = (1...99).freeze
+            RUBY
           end
         end
 
@@ -273,11 +305,10 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
               @a, @b = [1], 1
                        ^^^ #{msg}
             RUBY
-          end
 
-          it 'freezes first object when mutable' do
-            new_source = autocorrect_source(surround('@a, @b = [1], 1'))
-            expect(new_source).to eq(surround('@a, @b = [1].freeze, 1'))
+            expect_correction(surround(<<~RUBY))
+              @a, @b = [1].freeze, 1
+            RUBY
           end
 
           it 'registers an offense when middle object is mutable' do
@@ -285,14 +316,8 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
               @a, @b, @c = [1, { a: 1 }, [3].freeze]
                                ^^^^^^^^ #{msg}
             RUBY
-          end
 
-          it 'frezees middle object when mutable' do
-            new_source = autocorrect_source(surround(<<~RUBY))
-              @a, @b, @c = [1, { a: 1 }, [3].freeze]
-            RUBY
-
-            expect(new_source).to eq(surround(<<~RUBY))
+            expect_correction(surround(<<~RUBY))
               @a, @b, @c = [1, { a: 1 }.freeze, [3].freeze]
             RUBY
           end
@@ -302,14 +327,8 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
               @a, _, @c = 1, [2].freeze, 'foo'
                                          ^^^^^ #{msg}
             RUBY
-          end
 
-          it 'freezes last object when mutable' do
-            new_source = autocorrect_source(surround(<<~RUBY))
-              @a, _, @c = 1, [2].freeze, 'foo'
-            RUBY
-
-            expect(new_source).to eq(surround(<<~RUBY))
+            expect_correction(surround(<<~RUBY))
               @a, _, @c = 1, [2].freeze, 'foo'.freeze
             RUBY
           end
@@ -320,27 +339,22 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
                            ^^^^^ #{msg}
                                   ^^^ #{msg}
             RUBY
-          end
 
-          it 'freezes multiple mutable objects' do
-            new_source = autocorrect_source(surround(<<~RUBY))
-              @a, @b, @c = ['foo', [2], 3]
-            RUBY
-
-            expect(new_source).to eq(surround(<<~RUBY))
-              @a, @b, @c = ['foo'.freeze, [2].freeze, 3]
+            expect_correction(surround(<<~RUBY))
+              @a, @b, @c = 'foo'.freeze, [2].freeze, 3
             RUBY
           end
         end
 
         it 'freezes a heredoc' do
-          new_source = autocorrect_source(surround(<<~RUBY))
+          expect_offense(surround(<<~RUBY))
             @var = <<~HERE
+                   ^^^^^^^ #{msg}
               content
             HERE
           RUBY
 
-          expect(new_source).to eq(surround(<<~RUBY))
+          expect_correction(surround(<<~RUBY))
             @var = <<~HERE.freeze
               content
             HERE
@@ -447,11 +461,10 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
                 @var = *1..10
                        ^^^^^^ #{msg}
               RUBY
-            end
 
-            it 'corrects to use to_a.freeze' do
-              new_source = autocorrect_source(surround('@var = *1..10'))
-              expect(new_source).to eq(surround('@var = (1..10).to_a.freeze'))
+              expect_correction(surround(<<~RUBY))
+                @var = (1..10).to_a.freeze
+              RUBY
             end
 
             context 'with parentheses' do
@@ -460,11 +473,10 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
                   @var = *(1..10)
                          ^^^^^^^^ #{msg}
                 RUBY
-              end
 
-              it 'corrects to use to_a.freeze' do
-                new_source = autocorrect_source(surround('@var = *(1..10)'))
-                expect(new_source).to eq(surround('@var = (1..10).to_a.freeze'))
+                expect_correction(surround(<<~RUBY))
+                  @var = (1..10).to_a.freeze
+                RUBY
               end
             end
           end
@@ -477,11 +489,10 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
                 @var = FOO %{o} BAR
                        ^^^^^{o}^^^^ #{msg}
               RUBY
-            end
 
-            it 'auto-corrects by adding .freeze' do
-              new_source = autocorrect_source(surround("@var = FOO #{o} BAR"))
-              expect(new_source).to eq(surround("@var = (FOO #{o} BAR).freeze"))
+              expect_correction(surround(<<~RUBY))
+                @var = (FOO #{o} BAR).freeze
+              RUBY
             end
           end
 
@@ -502,17 +513,8 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
               @var = @a + @b + @c
                      ^^^^^^^^^^^^ #{msg}
             RUBY
-          end
 
-          it 'corrects by wrapping in parentheses and freezing' do
-            new_source = autocorrect_source(surround(<<~RUBY))
-              @a = [1].freeze
-              @b = [2].freeze
-              @c = [3].freeze
-              @var = @a + @b + @c
-            RUBY
-
-            expect(new_source).to eq(surround(<<~RUBY))
+            expect_correction(surround(<<~RUBY))
               @a = [1].freeze
               @b = [2].freeze
               @c = [3].freeze
@@ -545,11 +547,10 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
               @var = FOO + 'bar'
                      ^^^^^^^^^^^ #{msg}
             RUBY
-          end
 
-          it 'autocorrects with parentheses' do
-            new_source = autocorrect_source(surround("@var = FOO + 'bar'"))
-            expect(new_source).to eq(surround("@var = (FOO + 'bar').freeze"))
+            expect_correction(surround(<<~RUBY))
+              @var = (FOO + 'bar').freeze
+            RUBY
           end
 
           it 'registers an offense when operating on multiple strings' do
@@ -557,14 +558,8 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
               @var = 'foo' + 'bar' + 'baz'
                      ^^^^^^^^^^^^^^^^^^^^^ #{msg}
             RUBY
-          end
 
-          it 'autocorrects with parentheses' do
-            new_source = autocorrect_source(surround(<<~RUBY))
-              @var = 'foo' + 'bar' + 'baz'
-            RUBY
-
-            expect(new_source).to eq(surround(<<~RUBY))
+            expect_correction(surround(<<~RUBY))
               @var = ('foo' + 'bar' + 'baz').freeze
             RUBY
           end
@@ -572,24 +567,37 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
 
         context 'when assigning an array without brackets' do
           it 'adds brackets when auto-correcting' do
-            new_source = autocorrect_source(surround('@var = @a, @b'))
-            expect(new_source).to eq(surround('@var = [@a, @b].freeze'))
+            expect_offense(surround(<<~RUBY))
+              @var = @a, @b
+                     ^^^^^^ #{msg}
+            RUBY
+
+            expect_correction(surround(<<~RUBY))
+              @var = [@a, @b].freeze
+            RUBY
           end
 
           it 'does not add brackets to %w() arrays' do
-            new_source = autocorrect_source(surround('@var = %w(YYY ZZZ)'))
-            expect(new_source).to eq(surround('@var = %w(YYY ZZZ).freeze'))
+            expect_offense(surround(<<~RUBY))
+              @var = %w(YYY ZZZ)
+                     ^^^^^^^^^^^ #{msg}
+            RUBY
+
+            expect_correction(surround(<<~RUBY))
+              @var = %w(YYY ZZZ).freeze
+            RUBY
           end
         end
 
         it 'freezes a heredoc' do
-          new_source = autocorrect_source(surround(<<~RUBY))
+          expect_offense(surround(<<~RUBY))
             @var = <<~HERE
+                   ^^^^^^^ #{msg}
               content
             HERE
           RUBY
 
-          expect(new_source).to eq(surround(<<~RUBY))
+          expect_correction(surround(<<~RUBY))
             @var = <<~HERE.freeze
               content
             HERE
@@ -620,11 +628,10 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
               @a, @b = [1], 1
                        ^^^ #{msg}
             RUBY
-          end
 
-          it 'freezes first object when mutable' do
-            new_source = autocorrect_source(surround('@a, @b = [1], 1'))
-            expect(new_source).to eq(surround('@a, @b = [1].freeze, 1'))
+            expect_correction(surround(<<~RUBY))
+              @a, @b = [1].freeze, 1
+            RUBY
           end
 
           it 'registers an offense when middle object is mutable' do
@@ -632,14 +639,8 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
               @a, @b, @c = [1, { a: 1 }, [3].freeze]
                                ^^^^^^^^ #{msg}
             RUBY
-          end
 
-          it 'frezees middle object when mutable' do
-            new_source = autocorrect_source(surround(<<~RUBY))
-              @a, @b, @c = [1, { a: 1 }, [3].freeze]
-            RUBY
-
-            expect(new_source).to eq(surround(<<~RUBY))
+            expect_correction(surround(<<~RUBY))
               @a, @b, @c = [1, { a: 1 }.freeze, [3].freeze]
             RUBY
           end
@@ -649,14 +650,8 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
               @a, _, @c = 1, [2].freeze, 'foo'
                                          ^^^^^ #{msg}
             RUBY
-          end
 
-          it 'freezes last object when mutable' do
-            new_source = autocorrect_source(surround(<<~RUBY))
-              @a, _, @c = 1, [2].freeze, 'foo'
-            RUBY
-
-            expect(new_source).to eq(surround(<<~RUBY))
+            expect_correction(surround(<<~RUBY))
               @a, _, @c = 1, [2].freeze, 'foo'.freeze
             RUBY
           end
@@ -667,15 +662,9 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
                            ^^^^^ #{msg}
                                   ^^^ #{msg}
             RUBY
-          end
 
-          it 'freezes multiple mutable objects' do
-            new_source = autocorrect_source(surround(<<~RUBY))
-              @a, @b, @c = ['foo', [2], 3]
-            RUBY
-
-            expect(new_source).to eq(surround(<<~RUBY))
-              @a, @b, @c = ['foo'.freeze, [2].freeze, 3]
+            expect_correction(surround(<<~RUBY))
+              @a, @b, @c = 'foo'.freeze, [2].freeze, 3
             RUBY
           end
         end
